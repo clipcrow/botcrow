@@ -1,0 +1,6 @@
+{
+  "deno.enable": true,
+  "deno.unstable": [],
+  "deno.config": "deno.json",
+  "deno.enablePaths": ["serve.ts", "_config.ts", "src"]
+}
