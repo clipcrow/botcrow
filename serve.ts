@@ -14,7 +14,7 @@ router.get("/", async (ctx) => {
     model: "gemini-2.0-flash-lite",
     contents: req.message.message.message,
   });
-  ctx.response.body = result.text;
+  ctx.response.body = { message: result.text, message_type: "text" };
 });
 
 const app = new Application();
