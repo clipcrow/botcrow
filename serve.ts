@@ -3,8 +3,8 @@ import { load } from "std/dotenv/mod.ts";
 import { GoogleGenAI } from "npm:@google/genai";
 import type { ExecuteWebhookRequest } from "./type.ts";
 
-const env = await load();
-const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+await load({ export: true });
+const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
 
 const router = new Router();
 router.get("/", async (ctx) => {
