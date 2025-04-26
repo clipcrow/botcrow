@@ -7,7 +7,7 @@ await load({ export: true });
 const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
 
 const router = new Router();
-router.get("/", async (ctx) => {
+router.post("/", async (ctx) => {
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
   console.log(req);
 
