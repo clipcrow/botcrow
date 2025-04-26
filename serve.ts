@@ -9,11 +9,14 @@ const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
 const router = new Router();
 router.get("/", async (ctx) => {
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
+  console.log(req);
 
   const result = await ai.models.generateContent({
     model: "gemini-2.0-flash-lite",
     contents: req.message.message.message,
   });
+  console.log(result);
+
   ctx.response.body = { message: result.text, message_type: "text" };
 });
 
