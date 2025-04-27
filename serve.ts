@@ -5,9 +5,15 @@ import type { ExecuteWebhookRequest } from "./type.ts";
 
 await load({ export: true });
 const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
+const signature = Deno.env.get("X_CLIPCROW_SIGNATURE");
 
 const router = new Router();
 router.post("/", async (ctx) => {
+  if (signature && signature !== ctx.request.headers.get("X-ClipCrow-Signature")) {
+    ctx.response.status = 401;
+    return;
+  }
+
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
   console.log(req);
 
