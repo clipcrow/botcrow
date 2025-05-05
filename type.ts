@@ -5,15 +5,6 @@ export type ExecuteWebhookRequest = {
       message: string;
     };
   };
-  metadata: {
-    event: string;
-    event_payload: {
-      reaction_id: string;
-      answer: string;
-      question: string;
-    };
-  };
-  target_object: object;
   user: {
     id: string;
     email: string;
@@ -29,11 +20,11 @@ export type ExecuteWebhookRequest = {
     name: string;
     description: string;
   };
+  metadata?: object;
 };
 
 export type ExecuteWebhookResponse = {
-  form_item_data: object;
   message: string;
-  message_type: string;
-  metadata: object;
+  message_type: "text";
+  metadata?: object;
 };
