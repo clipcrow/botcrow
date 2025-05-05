@@ -15,7 +15,8 @@ for await (const entry of Deno.readDir("./pdf")) {
       mimeType: "application/pdf",
       data: Buffer.from(await Deno.readFile(entry.name)).toString("base64"),
     } 
-  })
+  });
+  console.log(entry.name);
 }
 
 const router = new Router();
