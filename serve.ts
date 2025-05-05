@@ -9,7 +9,7 @@ const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
 const signature = Deno.env.get("X_CLIPCROW_SIGNATURE");
 
 const embedded: Part[] = [];
-for await (const entry of Deno.readDir("pdf")) {
+for await (const entry of Deno.readDir("./pdf")) {
   embedded.push({
     inlineData: {
       mimeType: "application/pdf",
