@@ -13,7 +13,7 @@ for await (const entry of Deno.readDir("./pdf")) {
   embedded.push({
     inlineData: {
       mimeType: "application/pdf",
-      data: Buffer.from(await Deno.readFile(entry.name)).toString("base64"),
+      data: Buffer.from(await Deno.readFile(`./${entry.name}`)).toString("base64"),
     } 
   });
   console.log(entry.name);
