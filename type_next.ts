@@ -83,7 +83,7 @@ export type Message = MessageBody & {
  *  - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
  *  - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
- * @property target - WebHookが送信されたBOTの情報
+ * @property bot - WebHookが送信されたBOTの情報
  * @property reaction - 今回のWebHookを送信したリアクションの絵文字
  * @property history - スレッド内の会話の過去履歴。今回のWebHookを送信したメッセージは含まない
  * @property current - 今回のWebHookを送信したメッセージ
@@ -96,7 +96,7 @@ export type ExecuteWebhookRequest = {
     | "THREAD"
     | "GUEST_USER_CHAT"
     | "REACT_BOT_MESSAGE";
-  target: Card;
+  bot: Card;
   reaction?: string;
   history?: Message[];
   current: Message;
@@ -113,7 +113,7 @@ export type ExecuteWebhookResponse = MessageBody | null;
 
 export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   action: "MENTION",
-  target: {
+  bot: {
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "BOTCROW",
     type: "BOT",
