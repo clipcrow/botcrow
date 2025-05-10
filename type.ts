@@ -1,5 +1,5 @@
 export type Message = {
-  id: string
+  id: string;
   created_at: string;
   message: string;
 };
@@ -7,7 +7,7 @@ export type Message = {
 export type Bot = {
   id: string;
   name: string;
-} 
+};
 
 export type User = {
   id: string;
@@ -23,14 +23,14 @@ export type User = {
 export type Actor = {
   bot?: Bot;
   member?: User;
-}
+};
 
 export type Context = {
   messages: {
     actor: Actor;
     message: Message;
     mentions?: [];
-  }[]
+  }[];
 };
 
 export type ExecuteWebhookRequest = {
@@ -42,11 +42,11 @@ export type ExecuteWebhookRequest = {
   external_link: {
     id: string;
     name: string;
-  }
+  };
   user: User;
   message: {
     message: Message;
-  }
+  };
   context: Context;
   metadata?: object;
 };

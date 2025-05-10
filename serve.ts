@@ -16,23 +16,24 @@ router.post("/", async (ctx) => {
 
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
   console.log(req.action);
-  console.log(req.context);
+
+  if (req.action === "REACT_BOT_MESSAGE") {
+    ctx.response.status = 200;
+    return;
+  }
 
   const history = req.context.messages.map((h) => ({
     role: h.actor.bot ? "model" : "user",
     parts: [{ text: h.message.message }],
   }));
-  history.pop();
+  const current = history.pop();
 
   const chat = ai.chats.create({
     history,
-    model: "gemini-2.0-flash",
+    model: "gemini-2.0-flash-lite",
   });
   const result = await chat.sendMessage({
-    message: req.message.message.message,
-    config: {
-      systemInstruction: `あなたの名前は${req.external_link.name}です。`,
-    },
+    message: current!.parts[0].text,
   });
   console.log(result.text);
 
