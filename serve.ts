@@ -20,7 +20,7 @@ router.post("/", async (ctx) => {
 
   const history = req.context.messages.map((h) => {
     const name = h.actor.bot?.name || h.actor.member?.name;
-    return `[${name}の発言] :\n${h.message.message}`;
+    return `[${name}の発言] ${h.message.message}`;
   });
 
   const prompt = `次の会話に続けて話してください。\n会話:\n${history.join("\n")}\n返答:`;
