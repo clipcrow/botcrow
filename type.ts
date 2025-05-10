@@ -6,6 +6,11 @@ export type Message = {
   };
 };
 
+export type Bot = {
+  id: string;
+  name: string;
+} 
+
 export type User = {
   id: string;
   email: string;
@@ -18,15 +23,15 @@ export type User = {
 };
 
 export type Actor = {
-  bot?: object;
+  bot?: Bot;
   member?: User;
-  mentions?: [];
 }
 
 export type Context = {
   messages: {
     actor: Actor;
     message: Message;
+    mentions?: [];
   }[]
 };
 
