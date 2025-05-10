@@ -20,7 +20,7 @@ router.post("/", async (ctx) => {
 
   const history = req.context.messages.map((h) => {
     const name = h.actor.bot?.name || h.actor.member?.name;
-    const { message, created_at} = h.message.message;
+    const { message, created_at} = h.message;
     return `[${created_at}] ${name} : ${message}`;
   });
 

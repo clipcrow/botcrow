@@ -1,9 +1,7 @@
 export type Message = {
-  message: {
-    id: string
-    created_at: string;
-    message: string;
-  };
+  id: string
+  created_at: string;
+  message: string;
 };
 
 export type Bot = {
@@ -46,7 +44,9 @@ export type ExecuteWebhookRequest = {
     name: string;
   }
   user: User;
-  message: Message;
+  message: {
+    message: Message;
+  }
   context: Context;
   metadata?: object;
 };
