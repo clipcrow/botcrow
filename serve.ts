@@ -22,6 +22,14 @@ router.post("/", async (ctx) => {
     return;
   }
 
+  if (req.action === "GUEST_USER_CHAT") {
+    ctx.response.body = {
+      message: `BOTへの質問は、[${req.external_link.name}]をメンションに加えてください。`,
+      message_type: "text",
+    };
+    return;
+  }
+
   const history = req.context.messages.map((h) => ({
     role: h.actor.bot ? "model" : "user",
     parts: [{ text: h.message.message }],

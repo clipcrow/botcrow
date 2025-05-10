@@ -34,7 +34,7 @@ export type Message = MessageBody & {
 };
 
 export type ExecuteWebhookRequest = {
-  action: "MENTION" | "GUEST_USER_CHAT" | "REACT_BOT_MESSAGE";
+  action: "MENTION" | "THREAD" | "GUEST_USER_CHAT" | "REACT_BOT_MESSAGE";
   target: Actor;
   messages: Message[];
   reaction?: Reaction;
@@ -45,13 +45,13 @@ export type ExecuteWebhookRequest = {
 export type ExecuteWebhookResponse = MessageBody;
 
 export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
+  action: "MENTION",
   target: {
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "BOTCROW",
     type: "BOT",
     properties: [{ name: "plate", value: "世田谷 300 も 9000" }],
   },
-  action: "MENTION",
   messages: [
     {
       id: "af3619c9-8420-4f01-ad10-c117833d334e",
