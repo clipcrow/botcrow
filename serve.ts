@@ -20,11 +20,10 @@ router.post("/", async (ctx) => {
 
   const history = req.context.messages.map((h) => {
     const name = h.actor.bot?.name || h.actor.member?.name;
-    const { message, created_at} = h.message;
-    return `[${created_at}] ${name} : ${message}`;
+    return `[${name}の発言] :\n${h.message.message}`;
   });
 
-  const prompt = `次の会話に続けて話してください。\n会話:\n${history.join("\n")}`;
+  const prompt = `次の会話に続けて話してください。\n会話:\n${history.join("\n")}\n返答:`;
   console.log(prompt);
 
   const result = await ai.models.generateContent({
