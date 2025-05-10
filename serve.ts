@@ -23,7 +23,7 @@ router.post("/", async (ctx) => {
     return `[${name}] ${h.message.message}`;
   });
 
-  const prompt = `次の会話に続けて軽快に本題だけで話してください。\n会話:\n${history.join("\n")}\n返答:`;
+  const prompt = `次の会話に続けて軽快に本題だけで話してください。言われたことを繰り返さないこと。\n会話:\n${history.join("\n")}\n返答:`;
   console.log(prompt);
 
   const result = await ai.models.generateContent({
@@ -33,7 +33,7 @@ router.post("/", async (ctx) => {
       systemInstruction: `あなたも会話に登場しています。あなたの名前は${req.external_link.name}です。`,
     },
   });
-  console.log(result);
+  console.log(result.text);
 
   ctx.response.body = { message: result.text, message_type: "text" };
 });
