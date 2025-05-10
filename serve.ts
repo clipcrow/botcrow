@@ -16,7 +16,6 @@ router.post("/", async (ctx) => {
 
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
   console.log(req.context);
-  console.log(req.message);
 
   const result = await ai.models.generateContent({
     model: "gemini-2.0-flash-lite",

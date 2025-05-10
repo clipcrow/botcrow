@@ -1,5 +1,6 @@
 export type Message = {
   message: {
+    id: string
     created_at: string;
     message: string;
   };
@@ -16,10 +17,18 @@ export type User = {
   }[];
 };
 
+export type Actor = {
+  bot?: object;
+  member?: User;
+  mentions?: [];
+}
+
 export type Context = {
-  user: User;
-  message: Message;
-}[];
+  messages: {
+    actor: Actor;
+    message: Message;
+  }[]
+};
 
 export type ExecuteWebhookRequest = {
   action: string;
