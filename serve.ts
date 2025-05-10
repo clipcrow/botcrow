@@ -1,40 +1,26 @@
 import { Application, Router } from "jsr:@oak/oak";
 import { load } from "std/dotenv/mod.ts";
-import { GoogleGenAI, Part } from "npm:@google/genai";
-import { Buffer } from "node:buffer";
+import { GoogleGenAI } from "npm:@google/genai";
 import type { ExecuteWebhookRequest } from "./type.ts";
 
 await load({ export: true });
 const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
-const signature = Deno.env.get("X_CLIPCROW_SIGNATURE");
-
-const embedded: Part[] = [];
-for await (const entry of Deno.readDir("./pdf")) {
-  embedded.push({
-    inlineData: {
-      mimeType: "application/pdf",
-      data: Buffer.from(await Deno.readFile(`./pdf/${entry.name}`)).toString("base64"),
-    } 
-  });
-  console.log(entry.name);
-}
+const signature = Deno.env.get("X_CLIPCROW_SIGNATURE") || null;
 
 const router = new Router();
 router.post("/", async (ctx) => {
-  if (signature && signature !== ctx.request.headers.get("X-ClipCrow-Signature")) {
+  if (signature !== ctx.request.headers.get("X-ClipCrow-Signature")) {
     ctx.response.status = 401;
     return;
   }
 
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
-  console.log(req);
+  console.log(req.context);
+  console.log(req.message);
 
   const result = await ai.models.generateContent({
     model: "gemini-2.0-flash-lite",
-    contents: [ req.message.message.message, ...embedded ],
-    config: {
-      systemInstruction: "あなたはClipCrow製品サポートデスクの担当者です。",
-    }
+    contents: [req.message.message.message],
   });
   console.log(result);
 
