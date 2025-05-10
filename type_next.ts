@@ -93,6 +93,8 @@ export type Message = MessageBody & {
  *  - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
  * @property bot - WebHookが送信されたBOTの情報
  * @property reaction - 今回のWebHookを送信したリアクションの絵文字。REACT_BOT_MESSAGEの場合のみ
+ *  - emoji - 絵文字テキスト
+ *  - actor - リアクションを送信したユーザー
  * @property history - スレッド内の会話の過去履歴で、今回のWebHookを送信したメッセージは含まない
  * @property current - 今回のWebHookを送信したメッセージ
  * @property card - チャットが所属するカードの情報
@@ -105,7 +107,10 @@ export type ExecuteWebhookRequest = {
     | "GUEST_USER_CHAT"
     | "REACT_BOT_MESSAGE";
   bot: Card;
-  reaction?: string;
+  reaction?: {
+    emoji: string;
+    actor: Card;
+  };
   history?: Message[];
   current: Message;
   card: Card;

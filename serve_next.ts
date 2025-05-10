@@ -19,7 +19,7 @@ router.post("/", async (ctx) => {
 
   if (req.action === "REACT_BOT_MESSAGE") {
     ctx.response.body = {
-      text: `リアクション（ ${req.reaction} ）されました。`,
+      text: `リアクション（ ${req.reaction?.emoji} ）されました。`,
     };
     return;
   }
