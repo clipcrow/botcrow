@@ -1,7 +1,7 @@
 /**
  * カードの項目
  * @property name - 項目のタイトル
- * @property value - 値がテキストで記述されている
+ * @property value - 値のテキスト表記。UIでは秘匿された項目もWebHookでは秘匿しない
  */
 export type Property = {
   name: string;
