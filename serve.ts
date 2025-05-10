@@ -20,17 +20,17 @@ router.post("/", async (ctx) => {
 
   const history = req.context.messages.map((h) => {
     const name = h.actor.bot?.name || h.actor.member?.name;
-    return `[${name}の発言] ${h.message.message}`;
+    return `[${name}] ${h.message.message}`;
   });
 
-  const prompt = `次の会話に続けて話してください。\n会話:\n${history.join("\n")}\n返答:`;
+  const prompt = `次の会話に続けて軽快に本題だけで話してください。\n会話:\n${history.join("\n")}\n返答:`;
   console.log(prompt);
 
   const result = await ai.models.generateContent({
-    model: "gemini-2.0-flash-lite",
+    model: "gemini-2.0-flash",
     contents: prompt,
     config: {
-      systemInstruction: `あなたの名前は${req.external_link.name}です。`,
+      systemInstruction: `あなたも会話に登場しています。あなたの名前は${req.external_link.name}です。`,
     },
   });
   console.log(result);
