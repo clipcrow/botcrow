@@ -41,6 +41,10 @@ export type ExecuteWebhookRequest = {
     id: string;
     name: string;
   };
+  external_link: {
+    id: string;
+    name: string;
+  }
   user: User;
   message: Message;
   context: Context;

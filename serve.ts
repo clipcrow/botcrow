@@ -1,6 +1,6 @@
 import { Application, Router } from "jsr:@oak/oak";
 import { load } from "std/dotenv/mod.ts";
-import { GoogleGenAI, GenerateContentResponse } from "npm:@google/genai";
+import { GoogleGenAI } from "npm:@google/genai";
 import type { ExecuteWebhookRequest } from "./type.ts";
 
 await load({ export: true });
@@ -18,24 +18,18 @@ router.post("/", async (ctx) => {
   console.log(req.action);
   console.log(req.context);
 
-  let result: GenerateContentResponse;
-  if (req.context.messages.length == 1) {
-    result = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: [req.message.message.message],
-    });
-  } else {
-    const chat = ai.chats.create({
-      model: "gemini-2.0-flash-lite",
-      history: req.context.messages.map((h) => ({
-        role: h.actor.bot ? "model" : "user",
-        parts: [{ text: h.message.message.message }],
-      })),
-    });
-    result = await chat.sendMessage({
-      message: req.message.message.message,
-    });
-  }
+  const prompt = `次の会話に続けて話してください。\n会話:\n${req.context.messages.map((h) => (
+    `[${h.actor.bot?.name || h.actor.member?.name}]:\n${h.message.message.message}`
+  ))}`;
+  console.log(prompt);
+
+  const result = await ai.models.generateContent({
+    model: "gemini-2.0-flash-lite",
+    contents: prompt,
+    config: {
+      systemInstruction: `あなたの名前は${req.external_link.name}です。`,
+    },
+  });
   console.log(result);
 
   ctx.response.body = { message: result.text, message_type: "text" };
