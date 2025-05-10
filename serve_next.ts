@@ -18,15 +18,15 @@ router.post("/", async (ctx) => {
   console.log(req.action);
 
   if (req.action === "REACT_BOT_MESSAGE") {
-    ctx.response.status = 200;
+    ctx.response.body = {
+      text: `リアクション（ ${req.reaction} ）されました。`,
+    };
     return;
   }
 
   if (req.action === "GUEST_USER_CHAT") {
     ctx.response.body = {
-      message:
-        `BOTへの質問は、[${req.bot.name}]をメンションに加えてください。`,
-      message_type: "text",
+      text: `BOTへの質問は、[${req.bot.name}]をメンションに加えてください。`,
     };
     return;
   }
