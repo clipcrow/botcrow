@@ -17,7 +17,15 @@
  *  - value - 値がテキストで記述されている
  */
 export type Card = {
-  type: "WORKSPACE" | "CARD" | "BOT" | "MEMBER" | "GUEST" | "TAG" | "BROWSER" | "SETTING";
+  type:
+    | "WORKSPACE"
+    | "CARD"
+    | "BOT"
+    | "MEMBER"
+    | "GUEST"
+    | "TAG"
+    | "BROWSER"
+    | "SETTING";
   id: string;
   name: string;
   description?: string;
@@ -76,16 +84,22 @@ export type Message = MessageBody & {
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
  *  - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
  * @property target - WebHookが送信されたBOTの情報
- * @property messages - 会話の履歴。配列の最後には今回のWebHookを送信したメッセージが格納されている
  * @property reaction - 今回のWebHookを送信したリアクションの絵文字
+ * @property history - スレッド内の会話の過去履歴。今回のWebHookを送信したメッセージは含まない
+ * @property current - 今回のWebHookを送信したメッセージ
  * @property card - チャットが所属するカードの情報
  * @property workspace - チャットが所属するワークスペースの情報
  */
 export type ExecuteWebhookRequest = {
-  action: "MENTION" | "THREAD" | "GUEST_USER_CHAT" | "REACT_BOT_MESSAGE";
+  action:
+    | "MENTION"
+    | "THREAD"
+    | "GUEST_USER_CHAT"
+    | "REACT_BOT_MESSAGE";
   target: Card;
-  messages: Message[];
   reaction?: string;
+  history?: Message[];
+  current: Message;
   card: Card;
   workspace: Card;
 };
@@ -94,8 +108,6 @@ export type ExecuteWebhookRequest = {
  * BOTが作るWebHookの返信内容。BOTが書き込まないときにはレスポンスボディを空白にする
  */
 export type ExecuteWebhookResponse = MessageBody | null;
-
-
 
 // ############ WebHookの送受信サンプル ############
 
@@ -107,7 +119,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     type: "BOT",
     properties: [{ name: "plate", value: "世田谷 300 も 9000" }],
   },
-  messages: [
+  history: [
     {
       id: "af3619c9-8420-4f01-ad10-c117833d334e",
       created_at: "2025-05-10T06:19:58.859633Z",
@@ -133,17 +145,17 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
         something_two: 1111,
       },
     },
-    {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      created_at: "2025-05-10T06:19:58.859633Z",
-      actor: {
-        id: "af3619c9-8420-4f01-ad10-c117833d334e",
-        name: "目黒 太郎",
-        type: "MEMBER",
-      },
-      text: "東京から車でいける近場で、温泉が良い。",
-    },
   ],
+  current: {
+    id: "af3619c9-8420-4f01-ad10-c117833d334e",
+    created_at: "2025-05-10T06:19:58.859633Z",
+    actor: {
+      id: "af3619c9-8420-4f01-ad10-c117833d334e",
+      name: "目黒 太郎",
+      type: "MEMBER",
+    },
+    text: "東京から車でいける近場で、温泉が良い。",
+  },
   card: {
     type: "CARD",
     id: "af3619c9-8420-4f01-ad10-c117833d334e",

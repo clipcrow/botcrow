@@ -24,7 +24,8 @@ router.post("/", async (ctx) => {
 
   if (req.action === "GUEST_USER_CHAT") {
     ctx.response.body = {
-      message: `BOTへの質問は、[${req.external_link.name}]をメンションに加えてください。`,
+      message:
+        `BOTへの質問は、[${req.external_link.name}]をメンションに加えてください。`,
       message_type: "text",
     };
     return;
