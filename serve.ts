@@ -18,19 +18,20 @@ router.post("/", async (ctx) => {
   console.log(req.action);
   console.log(req.context);
 
-  const history = req.context.messages.map((h) => {
-    const name = h.actor.bot?.name || h.actor.member?.name;
-    return `[${name}] ${h.message.message}`;
-  });
+  const history = req.context.messages.map((h) => ({
+    role: h.actor.bot ? "model" : "user",
+    parts: [{ text: h.message.message }],
+  }));
+  history.pop();
 
-  const prompt = `次の会話に続けて軽快に本題だけで話してください。言われたことを繰り返さないこと。\n会話:\n${history.join("\n")}\n返答:`;
-  console.log(prompt);
-
-  const result = await ai.models.generateContent({
+  const chat = ai.chats.create({
+    history,
     model: "gemini-2.0-flash",
-    contents: prompt,
+  });
+  const result = await chat.sendMessage({
+    message: req.message.message.message,
     config: {
-      systemInstruction: `あなたも会話に登場しています。あなたの名前は${req.external_link.name}です。`,
+      systemInstruction: `あなたの名前は${req.external_link.name}です。`,
     },
   });
   console.log(result.text);
