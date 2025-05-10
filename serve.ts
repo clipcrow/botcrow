@@ -18,9 +18,13 @@ router.post("/", async (ctx) => {
   console.log(req.action);
   console.log(req.context);
 
-  const prompt = `次の会話に続けて話してください。\n会話:\n${req.context.messages.map((h) => (
-    `[${h.actor.bot?.name || h.actor.member?.name}]:\n${h.message.message.message}`
-  ))}`;
+  const history = req.context.messages.map((h) => {
+    const name = h.actor.bot?.name || h.actor.member?.name;
+    const { message, created_at} = h.message.message;
+    return `[${created_at}] ${name} : ${message}`;
+  });
+
+  const prompt = `次の会話に続けて話してください。\n会話:\n${history.join("\n")}`;
   console.log(prompt);
 
   const result = await ai.models.generateContent({
