@@ -1,4 +1,14 @@
 /**
+ * カードの項目
+ * @property name - 項目のタイトル
+ * @property value - 値がテキストで記述されている
+ */
+export type Property = {
+  name: string;
+  value: string;
+};
+
+/**
  * ClipCrowでカードとして表現される様々なオブジェクト
  * @property type - カードの種類
  *  - WORKSPACE - ワークスペース
@@ -13,8 +23,6 @@
  * @property name - カードのタイトルもしくは姓名
  * @property description - カードの説明文章。ボットがプロンプトに組み込む
  * @property properties - カードの情報項目と報告項目全てをテキスト表示する
- *  - name - 項目のタイトル
- *  - value - 値がテキストで記述されている
  */
 export type Card = {
   type:
@@ -29,10 +37,7 @@ export type Card = {
   id: string;
   name: string;
   description?: string;
-  properties?: {
-    name: string;
-    value: string;
-  }[];
+  properties?: Property[];
 };
 
 /**
@@ -47,8 +52,8 @@ export type Reaction = {
 
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
- * @property text - メッセージ本文
- * @property attachment - 画像・ロケーションなどの情報。現在は保留して、将来対応とする
+ * @property text - 書き込むメッセージ
+ * @property attachment - 書き込む画像・ロケーションなど。（現在は保留して、将来対応とする）
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
  */
 export type MessageBody = {
@@ -68,6 +73,9 @@ export type MessageBody = {
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
  * @property reactions - メッセージに付加された絵文字リアクションの情報
+ * @property text - メッセージ本文
+ * @property attachment - 表示されている画像・ロケーションなど（現在は保留して、将来対応とする）
+ * @property metadata - BOT側で以前に設定した情報
  */
 export type Message = MessageBody & {
   id: string;
@@ -84,8 +92,8 @@ export type Message = MessageBody & {
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
  *  - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
  * @property bot - WebHookが送信されたBOTの情報
- * @property reaction - 今回のWebHookを送信したリアクションの絵文字
- * @property history - スレッド内の会話の過去履歴。今回のWebHookを送信したメッセージは含まない
+ * @property reaction - 今回のWebHookを送信したリアクションの絵文字。REACT_BOT_MESSAGEの場合のみ
+ * @property history - スレッド内の会話の過去履歴で、今回のWebHookを送信したメッセージは含まない
  * @property current - 今回のWebHookを送信したメッセージ
  * @property card - チャットが所属するカードの情報
  * @property workspace - チャットが所属するワークスペースの情報
