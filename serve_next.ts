@@ -36,9 +36,10 @@ router.post("/", async (ctx) => {
 
   if (req.history) {
     const history = req.history!.map((h) => ({
-      role: h.actor.type == "BOT" ? "model" : "user",
+      role: h.actor.type === "BOT" ? "model" : "user",
       parts: [{ text: h.text }],
     }));
+    console.log(history);
     const chat = ai.chats.create({
       model,
       history,
