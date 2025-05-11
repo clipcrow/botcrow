@@ -74,9 +74,9 @@ export type MessageBody = {
 };
 
 /**
- * Actionログイベント種類を示す識別（現在は保留して、将来対応とする）
+ * Actionログに記載する操作種類を示す識別（現在は保留して、将来対応とする）
  */
-export type ActionEvent =
+export type Operation =
   | "CREATE"
   | "EDIT"
   | "";
@@ -86,14 +86,14 @@ export type ActionEvent =
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
- * @property event - Actionログイベント種類。NOTIFICATIONの場合のみ（現在は保留して、将来対応とする）
+ * @property operation - Actionログに記載する操作種類。NOTIFICATIONの場合のみ（将来対応）
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
-//event?: ActionEvent;
+//operation?: Operation;
   reactions?: Reaction[];
 };
 
