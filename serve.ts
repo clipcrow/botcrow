@@ -35,6 +35,7 @@ router.post("/", async (ctx) => {
     role: h.actor.bot ? "model" : "user",
     parts: [{ text: h.message.message }],
   }));
+  console.log(history);
   const current = history.pop();
 
   const chat = ai.chats.create({
