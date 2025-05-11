@@ -13,9 +13,12 @@ export type Property = {
  * @property type - カードの種類
  *  - WORKSPACE - ワークスペース
  *  - CARD - タスクや連絡などユーザーが作成したもの
- *  - BOT - BOTアカウント
- *  - MEMBER - 管理者・スタッフ・パートナー
+ *  - MANAGER - 管理者
+ *  - STAFF - スタッフ
+ *  - PARTNER - パートナー
  *  - GUEST - ゲストユーザー
+ *  - BOT - BOTアカウント
+ *  - TEMPLATE - テンプレート
  *  - TAG - タググループ
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
@@ -28,9 +31,12 @@ export type Card = {
   type:
     | "WORKSPACE"
     | "CARD"
-    | "BOT"
-    | "MEMBER"
+    | "MANAGER"
+    | "STAFF"
+    | "PARTNER"
     | "GUEST"
+    | "BOT"
+    | "TEMPLATE"
     | "TAG"
     | "BROWSER"
     | "SETTING";
@@ -53,7 +59,7 @@ export type Reaction = {
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property text - 書き込むメッセージ
- * @property attachment - 書き込む画像・ロケーションなど。（現在は保留して、将来対応とする）
+ * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど（将来対応）
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
  */
 export type MessageBody = {
@@ -68,25 +74,33 @@ export type MessageBody = {
 };
 
 /**
+ * Actionログイベント種類を示す識別（現在は保留して、将来対応とする）
+ */
+export type ActionEvent =
+  | "CREATE"
+  | "EDIT"
+  | "";
+
+/**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
- * @property id - メッセージへAPIでアクセスする際に用いるためのID
+ * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
+ * @property event - Actionログイベント種類。NOTIFICATIONの場合のみ（現在は保留して、将来対応とする）
  * @property reactions - メッセージに付加された絵文字リアクションの情報
- * @property text - メッセージ本文
- * @property attachment - 表示されている画像・ロケーションなど（現在は保留して、将来対応とする）
- * @property metadata - BOT側で以前に設定した情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
+//event?: ActionEvent;
   reactions?: Reaction[];
 };
 
 /**
  * ClipCrowからBOTのエンドポイントへ送信されるWebHookのペイロード
  * @property action - WebHookの発生理由。
+ *  - NOTIFICATION - カードの変化について通知されるとき （現在は保留して、将来対応とする）
  *  - MENTION - BOTを明示的にメンションしたとき
  *  - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
@@ -102,6 +116,7 @@ export type Message = MessageBody & {
  */
 export type ExecuteWebhookRequest = {
   action:
+  //| "NOTIFICATION"
     | "MENTION"
     | "THREAD"
     | "GUEST_USER_CHAT"
@@ -139,7 +154,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
       actor: {
         id: "af3619c9-8420-4f01-ad10-c117833d334e",
         name: "目黒 太郎",
-        type: "MEMBER",
+        type: "MANAGER",
       },
       text: "おすすめの旅行先をおしえてください。",
     },
@@ -165,7 +180,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     actor: {
       id: "af3619c9-8420-4f01-ad10-c117833d334e",
       name: "目黒 太郎",
-      type: "MEMBER",
+      type: "MANAGER",
     },
     text: "東京から車でいける近場で、温泉が良い。",
   },
