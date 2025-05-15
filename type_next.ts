@@ -145,7 +145,6 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "BOTCROW",
     type: "BOT",
-    properties: [{ name: "plate", value: "世田谷 300 も 9000" }],
   },
   history: [
     {
@@ -155,6 +154,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
         id: "af3619c9-8420-4f01-ad10-c117833d334e",
         name: "目黒 太郎",
         type: "MANAGER",
+        properties: [{ name: "plate", value: "品川 399 あ 0000" }],
       },
       text: "おすすめの旅行先をおしえてください。",
     },
@@ -165,7 +165,6 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
         id: "af3619c9-8420-4f01-ad10-c117833d334e",
         name: "BOTCROW",
         type: "BOT",
-        properties: [{ name: "plate", value: "世田谷 300 も 9000" }],
       },
       text: "了解いたしました。もうすこし詳しく条件を教えて下さい。",
       metadata: {
@@ -181,6 +180,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
       id: "af3619c9-8420-4f01-ad10-c117833d334e",
       name: "目黒 太郎",
       type: "MANAGER",
+      properties: [{ name: "plate", value: "品川 399 あ 0000" }],
     },
     text: "東京から車でいける近場で、温泉が良い。",
   },
