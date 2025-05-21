@@ -15,39 +15,51 @@ router.post("/", async (ctx) => {
   }
 
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
-  console.log(req.action);
+  console.log(req);
 
   if (req.action === "REACT_BOT_MESSAGE") {
-    ctx.response.status = 200;
+    ctx.response.body = {
+      text: `リアクション（ ${req.reaction?.emoji} ）されました。`,
+    };
     return;
   }
 
   if (req.action === "GUEST_USER_CHAT") {
     ctx.response.body = {
-      message:
-        `BOTへの質問は、[${req.external_link.name}]をメンションに加えてください。`,
-      message_type: "text",
+      text: `BOTへの質問は、[${req.bot.name}]をメンションに加えてください。`,
     };
     return;
   }
 
-  const history = req.context.messages.map((h) => ({
-    role: h.actor.bot ? "model" : "user",
-    parts: [{ text: h.message.message }],
-  }));
-  console.log(history);
-  const current = history.pop();
+  const model = "gemini-2.0-flash-lite"; 
+  let result;
 
-  const chat = ai.chats.create({
-    history,
-    model: "gemini-2.0-flash-lite",
-  });
-  const result = await chat.sendMessage({
-    message: current!.parts[0].text,
-  });
-  console.log(result.text);
+  if (req.history && req.history.length > 0) {
+    const history = req.history.map((h) => ({
+      role: h.actor.type === "BOT" ? "model" : "user",
+      parts: [{ text: h.text }],
+    }));
+    const chat = ai.chats.create({
+      model,
+      history,
+    });
+    result = await chat.sendMessage({
+      message: req.current.text,
+    });
+  } else {
+    result = await ai.models.generateContent({
+      model,
+      contents: req.current.text,
+    });
+  }
 
-  ctx.response.body = { message: result.text, message_type: "text" };
+  const text = result.text;
+  if (text) {
+    console.log(text);
+    ctx.response.body = { text };
+  } else {
+    ctx.response.status = 200;
+  }
 });
 
 const app = new Application();
