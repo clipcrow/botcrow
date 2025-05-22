@@ -9,6 +9,18 @@ export type Property = {
 };
 
 /**
+ * BOTとの送信と受信の両方で用いられるカードの内容
+ * @property name - カードのタイトルもしくは姓名
+ * @property description - カードの説明文章。ボットがプロンプトに組み込む
+ * @property properties - カードの情報項目と報告項目全てをテキスト表示する
+ */
+export type CardBody = {
+  name: string;
+  description?: string;
+  properties?: Property[];
+};
+
+/**
  * ClipCrowでカードとして表現される様々なオブジェクト
  * @property type - カードの種類
  *  - WORKSPACE - ワークスペース
@@ -23,11 +35,8 @@ export type Property = {
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
  * @property id - カードへAPIでアクセスする際に用いるためのID
- * @property name - カードのタイトルもしくは姓名
- * @property description - カードの説明文章。ボットがプロンプトに組み込む
- * @property properties - カードの情報項目と報告項目全てをテキスト表示する
  */
-export type Card = {
+export type Card = CardBody & {
   type:
     | "WORKSPACE"
     | "CARD"
@@ -41,9 +50,6 @@ export type Card = {
     | "BROWSER"
     | "SETTING";
   id: string;
-  name: string;
-  description?: string;
-  properties?: Property[];
 };
 
 /**
@@ -58,6 +64,7 @@ export type Reaction = {
 
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
+ * @property type - 固定で"MESSAGE"
  * @property text - 書き込むメッセージ
  * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど（将来対応）
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
@@ -133,9 +140,26 @@ export type ExecuteWebhookRequest = {
 };
 
 /**
+ * ClipCrowに書き込むメッセージのDTO
+ * @property type - ”MESSAGE”固定
+ */
+export type NewMessage = MessageBody & {
+  type: "MESSAGE";
+}
+
+/**
+ * ClipCrowに書き込むカードのDTO
+ * @property type - "CARD"固定
+ */
+export type NewCard = CardBody & {
+  type: "CARD";
+  isTask: boolean;
+}
+
+/**
  * BOTが作るWebHookの返信内容。BOTが書き込まないときにはレスポンスボディを空白にする
  */
-export type ExecuteWebhookResponse = MessageBody | null | undefined;
+export type ExecuteWebhookResponse = NewMessage | NewCard | null | undefined;
 
 // ############ WebHookの送受信サンプル ############
 
@@ -146,33 +170,6 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     name: "BOTCROW",
     type: "BOT",
   },
-  history: [
-    {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      created_at: "2025-05-10T06:19:58.859633Z",
-      actor: {
-        id: "af3619c9-8420-4f01-ad10-c117833d334e",
-        name: "目黒 太郎",
-        type: "MANAGER",
-        properties: [{ name: "plate", value: "品川 399 あ 0000" }],
-      },
-      text: "おすすめの旅行先をおしえてください。",
-    },
-    {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      created_at: "2025-05-10T06:19:58.859633Z",
-      actor: {
-        id: "af3619c9-8420-4f01-ad10-c117833d334e",
-        name: "BOTCROW",
-        type: "BOT",
-      },
-      text: "了解いたしました。もうすこし詳しく条件を教えて下さい。",
-      metadata: {
-        something_one: "12345678",
-        something_two: 1111,
-      },
-    },
-  ],
   current: {
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     created_at: "2025-05-10T06:19:58.859633Z",
@@ -200,6 +197,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
 };
 
 export const SAMPLE_RESPONSE: ExecuteWebhookResponse = {
+  type: "MESSAGE",
   text: "箱根はいかがでしょうか。箱根は東京からも近く、温泉地として有名です。",
   /*
   attachment: {
