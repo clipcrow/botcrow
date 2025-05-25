@@ -31,7 +31,10 @@ router.post("/", async (ctx) => {
     return;
   }
 
-  const model = "gemini-2.0-flash-lite"; 
+  const model = "gemini-2.0-flash-lite";
+  const systemInstruction = 
+    "Be clear and short, don't try to answer everything at once," + 
+    " and try to keep the conversation going with your users."; 
   let result;
 
   if (req.history && req.history.length > 0) {
@@ -42,6 +45,7 @@ router.post("/", async (ctx) => {
     const chat = ai.chats.create({
       model,
       history,
+      config: { systemInstruction },
     });
     result = await chat.sendMessage({
       message: req.current.text,
@@ -50,6 +54,7 @@ router.post("/", async (ctx) => {
     result = await ai.models.generateContent({
       model,
       contents: req.current.text,
+      config: { systemInstruction },
     });
   }
 

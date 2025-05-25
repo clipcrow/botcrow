@@ -63,25 +63,33 @@ export type Reaction = {
 };
 
 /**
+ * メッセージの添付情報
+ */
+export type Attachment = {
+  type:
+    | "LOCATION"
+    | "IMAGE"
+    | "CARD"
+    | "PROPERTIES"
+  ;
+  value: string | Card | Property[];
+};
+
+/**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property type - 固定で"MESSAGE"
  * @property text - 書き込むメッセージ
- * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど（将来対応）
+ * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
  */
 export type MessageBody = {
   text: string;
-  /*
-  attachment?: {
-    media_type: string;
-    value: string;
-  };
-  */
+  attachment?: Attachment;
   metadata?: object;
 };
 
 /**
- * Actionログに記載する操作種類を示す識別（現在は保留して、将来対応とする）
+ * Actionログに記載する操作種類を示す識別
  */
 export type Operation =
   | "CREATE"
@@ -93,21 +101,27 @@ export type Operation =
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
- * @property operation - Actionログに記載する操作種類。NOTIFICATIONの場合のみ（将来対応）
+ * @property operation - Actionログに記載する操作種類。NOTIFICATIONの場合のみ
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
-//operation?: Operation;
+  operation?: Operation;
   reactions?: Reaction[];
+};
+
+export type Device = {
+  type: "IOS" | "ANDROID" | "BROWSER";
+  screen: "PHONE_S" | "PHONE" | "TABLET_S" | "TABLET" | "PC" | "PC_L" ;
+  language: "en" | "ja" | "vi";
 };
 
 /**
  * ClipCrowからBOTのエンドポイントへ送信されるWebHookのペイロード
  * @property action - WebHookの発生理由。
- *  - NOTIFICATION - カードの変化について通知されるとき （現在は保留して、将来対応とする）
+ *  - NOTIFICATION - カードの変化について通知されるとき
  *  - MENTION - BOTを明示的にメンションしたとき
  *  - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
@@ -123,7 +137,7 @@ export type Message = MessageBody & {
  */
 export type ExecuteWebhookRequest = {
   action:
-  //| "NOTIFICATION"
+    | "NOTIFICATION"
     | "MENTION"
     | "THREAD"
     | "GUEST_USER_CHAT"
@@ -137,29 +151,13 @@ export type ExecuteWebhookRequest = {
   current: Message;
   card: Card;
   workspace: Card;
+  device: Device;
 };
-
-/**
- * ClipCrowに書き込むメッセージのDTO
- * @property type - ”MESSAGE”固定
- */
-export type NewMessage = MessageBody & {
-  type: "MESSAGE";
-}
-
-/**
- * ClipCrowに書き込むカードのDTO
- * @property type - "CARD"固定
- */
-export type NewCard = CardBody & {
-  type: "CARD";
-  isTask: boolean;
-}
 
 /**
  * BOTが作るWebHookの返信内容。BOTが書き込まないときにはレスポンスボディを空白にする
  */
-export type ExecuteWebhookResponse = NewMessage | NewCard | null | undefined;
+export type ExecuteWebhookResponse = MessageBody | null | undefined;
 
 // ############ WebHookの送受信サンプル ############
 
@@ -194,17 +192,19 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     name: "奥沢自動車産業",
     description: "SUV専門、防犯装置取り付けなら都内施工数最多の当店へ",
   },
+  device: {
+    type: "IOS",
+    screen: "PHONE",
+    language: "ja",
+  }
 };
 
 export const SAMPLE_RESPONSE: ExecuteWebhookResponse = {
-  type: "MESSAGE",
   text: "箱根はいかがでしょうか。箱根は東京からも近く、温泉地として有名です。",
-  /*
   attachment: {
-    media_type: "location",
+    type: "LOCATION",
     value: "35.232290°N 139.105189°E",
   },
-  */
   metadata: {
     something_one: "12345678",
     something_two: 9999,
