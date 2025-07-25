@@ -92,23 +92,52 @@ export type MessageBody = {
  * Actionログに記載する操作種類を示す識別
  */
 export type Operation =
-  | "CREATE"
-  | "EDIT"
-  | "";
+  | "NEW"         /* 新規作成 */
+  | "DELETE"      /* 削除 */
+  | "EDIT"        /* 編集 */
+  | "UPDATE"      /* 項目を更新 */
+  | "ASSIGN"      /* 担当者に追加 */
+  | "RELEASE"     /* 担当から外す */
+  | "START"       /* 開始 */
+  | "PAUSE"       /* 中断 */
+  | "RESUME"      /* 再開 */
+  | "COMPLETE"    /* 完了 */
+  | "REWIND"      /* 状態を戻すAction一般 */
+  | "RESCHEDULE"  /* 期限日を変更する */
+  | "ARCHIVE"     /* アーカイブする */
+  | "UNARCHIVE"   /* アーカイブから戻す */
+  | "CHAT"        /* チャットへの書き込み */
+;
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
- * @property operation - Actionログに記載する操作種類。NOTIFICATIONの場合のみ
+ * @property operation - Actionログに記載する操作種類。action=NOTIFICATIONの場合のみ値を持つ
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
-  operation?: Operation;
+  operation?:
+    | "NEW"         /* 新規作成 */
+    | "DELETE"      /* 削除 */
+    | "EDIT"        /* 編集 */
+    | "UPDATE"      /* 項目を更新 */
+    | "ASSIGN"      /* 担当者に追加 */
+    | "RELEASE"     /* 担当から外す */
+    | "START"       /* 開始 */
+    | "PAUSE"       /* 中断 */
+    | "RESUME"      /* 再開 */
+    | "COMPLETE"    /* 完了 */
+    | "REWIND"      /* 状態を戻すAction一般 */
+    | "RESCHEDULE"  /* 期限日を変更する */
+    | "ARCHIVE"     /* アーカイブする */
+    | "UNARCHIVE"   /* アーカイブから戻す */
+    | "CHAT"        /* チャットへの書き込み */
+  ;
   reactions?: Reaction[];
 };
 
@@ -141,7 +170,8 @@ export type ExecuteWebhookRequest = {
     | "MENTION"
     | "THREAD"
     | "GUEST_USER_CHAT"
-    | "REACT_BOT_MESSAGE";
+    | "REACT_BOT_MESSAGE"
+  ;
   bot: Card;
   reaction?: {
     emoji: string;
