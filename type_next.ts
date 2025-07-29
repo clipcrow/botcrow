@@ -77,7 +77,6 @@ export type Attachment = {
 
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
- * @property type - 固定で"MESSAGE"
  * @property text - 書き込むメッセージ
  * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
@@ -87,27 +86,6 @@ export type MessageBody = {
   attachment?: Attachment;
   metadata?: object;
 };
-
-/**
- * Actionログに記載する操作種類を示す識別
- */
-export type Operation =
-  | "NEW"         /* 新規作成 */
-  | "DELETE"      /* 削除 */
-  | "EDIT"        /* 編集 */
-  | "UPDATE"      /* 項目を更新 */
-  | "ASSIGN"      /* 担当者に追加 */
-  | "RELEASE"     /* 担当から外す */
-  | "START"       /* 開始 */
-  | "PAUSE"       /* 中断 */
-  | "RESUME"      /* 再開 */
-  | "COMPLETE"    /* 完了 */
-  | "REWIND"      /* 状態を戻すAction一般 */
-  | "RESCHEDULE"  /* 期限日を変更する */
-  | "ARCHIVE"     /* アーカイブする */
-  | "UNARCHIVE"   /* アーカイブから戻す */
-  | "CHAT"        /* チャットへの書き込み */
-;
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
@@ -139,12 +117,6 @@ export type Message = MessageBody & {
     | "CHAT"        /* チャットへの書き込み */
   ;
   reactions?: Reaction[];
-};
-
-export type Device = {
-  type: "IOS" | "ANDROID" | "BROWSER";
-  screen: "PHONE_S" | "PHONE" | "TABLET_S" | "TABLET" | "PC" | "PC_L" ;
-  language: "en" | "ja" | "vi";
 };
 
 /**
@@ -181,7 +153,6 @@ export type ExecuteWebhookRequest = {
   current: Message;
   card: Card;
   workspace: Card;
-  device: Device;
 };
 
 /**
@@ -221,11 +192,6 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "奥沢自動車産業",
     description: "SUV専門、防犯装置取り付けなら都内施工数最多の当店へ",
-  },
-  device: {
-    type: "IOS",
-    screen: "PHONE",
-    language: "ja",
   }
 };
 
