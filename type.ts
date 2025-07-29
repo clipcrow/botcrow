@@ -59,48 +59,30 @@ export type Reaction = {
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property text - 書き込むメッセージ
- * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど（将来対応）
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
  */
 export type MessageBody = {
   text: string;
-  /*
-  attachment?: {
-    media_type: string;
-    value: string;
-  };
-  */
   metadata?: object;
 };
-
-/**
- * Actionログに記載する操作種類を示す識別（現在は保留して、将来対応とする）
- */
-export type Operation =
-  | "CREATE"
-  | "EDIT"
-  | "";
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
- * @property operation - Actionログに記載する操作種類。NOTIFICATIONの場合のみ（将来対応）
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
-//operation?: Operation;
   reactions?: Reaction[];
 };
 
 /**
  * ClipCrowからBOTのエンドポイントへ送信されるWebHookのペイロード
  * @property action - WebHookの発生理由。
- *  - NOTIFICATION - カードの変化について通知されるとき （現在は保留して、将来対応とする）
  *  - MENTION - BOTを明示的にメンションしたとき
  *  - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
  *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
@@ -116,7 +98,6 @@ export type Message = MessageBody & {
  */
 export type ExecuteWebhookRequest = {
   action:
-  //| "NOTIFICATION"
     | "MENTION"
     | "THREAD"
     | "GUEST_USER_CHAT"
