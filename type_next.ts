@@ -174,6 +174,9 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     type: "CARD",
     id: "abcdefgh-1234-5678-jkmn-p9123456card",
     name: "サンプルカード",
+    properties: [
+      { name: "追加した項目", value: "0002" },
+    ],
   },
   workspace: {
     type: "WORKSPACE",
