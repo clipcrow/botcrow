@@ -27,7 +27,6 @@ export type CardBody = {
  *  - CARD - タスクや連絡などユーザーが作成したもの
  *  - MANAGER - 管理者
  *  - STAFF - スタッフ
- *  - PARTNER - パートナー
  *  - GUEST - ゲストユーザー
  *  - BOT - BOTアカウント
  *  - TEMPLATE - テンプレート
@@ -42,7 +41,6 @@ export type Card = CardBody & {
     | "CARD"
     | "MANAGER"
     | "STAFF"
-    | "PARTNER"
     | "GUEST"
     | "BOT"
     | "TEMPLATE"
