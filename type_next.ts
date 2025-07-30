@@ -2,10 +2,12 @@
  * カードの項目
  * @property name - 項目のタイトル
  * @property value - 値のテキスト表記。UIでは秘匿された項目もWebHookでは秘匿しない
+ * @property remove - 値を削除した変更の場合はTrueを設定する
  */
 export type Property = {
   name: string;
   value: string;
+  remove?: boolean;
 };
 
 /**
@@ -145,35 +147,38 @@ export type ExecuteWebhookResponse = MessageBody | null | undefined;
 // ############ WebHookの送受信サンプル ############
 
 export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
-  action: "MENTION",
-  bot: {
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "BOTCROW",
-    type: "BOT",
-  },
+  action: "LOG",
   current: {
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    created_at: "2025-05-10T06:19:58.859633Z",
+    id: "abcdefgh-1234-5678-jkmn-p9123current",
+    created_at: "2025-07-30T09:00:00.000000Z",
     actor: {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      name: "目黒 太郎",
-      type: "MANAGER",
-      properties: [{ name: "plate", value: "品川 399 あ 0000" }],
+      id: "abcdefgh-1234-5678-jkmn-p912345actor",
+      name: "サンプルユーザー",
+      type: "STAFF",
     },
-    text: "東京から車でいける近場で、温泉が良い。",
+    text: "編集",
+    attachment: {
+      type: "PROPERTIES",
+      value: [
+        { name: "削除した項目", value: "0001", remove: true },
+        { name: "追加した項目", value: "0002" },
+      ],
+    },
+  },
+  bot: {
+    type: "BOT",
+    id: "abcdefgh-1234-5678-jkmn-p91234567bot",
+    name: "サンプルBOT",
   },
   card: {
     type: "CARD",
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "general",
-    description:
-      "このチャットルームはワークスペース全体のコミュニケーションとチームへのアナウンス用です。",
+    id: "abcdefgh-1234-5678-jkmn-p9123456card",
+    name: "サンプルカード",
   },
   workspace: {
     type: "WORKSPACE",
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "奥沢自動車産業",
-    description: "SUV専門、防犯装置取り付けなら都内施工数最多の当店へ",
+    id: "abcdefgh-1234-5678-jkmn-p91workspace",
+    name: "サンプルワークスペース",
   }
 };
 
