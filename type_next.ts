@@ -82,7 +82,7 @@ export type Attachment = {
  */
 export type MessageBody = {
   text: string;
-  operation?: string;
+  annotation?: string;
   attachment?: Attachment;
   metadata?: object;
 };
