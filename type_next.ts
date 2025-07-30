@@ -181,15 +181,3 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     name: "サンプルワークスペース",
   }
 };
-
-export const SAMPLE_RESPONSE: ExecuteWebhookResponse = {
-  text: "箱根はいかがでしょうか。箱根は東京からも近く、温泉地として有名です。",
-  attachment: {
-    type: "LOCATION",
-    value: "35.232290°N 139.105189°E",
-  },
-  metadata: {
-    something_one: "12345678",
-    something_two: 9999,
-  },
-};
