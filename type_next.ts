@@ -76,11 +76,13 @@ export type Attachment = {
 /**
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property text - 書き込むメッセージ
+ * @property annotation - Actionログに記載された操作対象
  * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
  */
 export type MessageBody = {
   text: string;
+  operation?: string;
   attachment?: Attachment;
   metadata?: object;
 };
@@ -90,14 +92,12 @@ export type MessageBody = {
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
- * @property operation - Actionログに記載する操作種類。action=LOGの場合のみ値を持つ
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
   created_at: string;
   actor: Card;
-  operation?: string;
   reactions?: Reaction[];
 };
 
