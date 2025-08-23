@@ -152,7 +152,6 @@ export type ExecuteWebhookResponse = MessageBody | null | undefined;
 export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   action: "LOG",
   current: {
-    thread_no: 129,
     id: "abcdefgh-1234-5678-jkmn-p9123current",
     created_at: "2025-07-30T09:00:00.000000Z",
     actor: {
