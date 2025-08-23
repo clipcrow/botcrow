@@ -12,6 +12,18 @@ export type Property = {
 
 /**
  * BOTとの送信と受信の両方で用いられるカードの内容
+ * @property name - カードのタイトルもしくは姓名
+ * @property description - カードの説明文章。ボットがプロンプトに組み込む
+ * @property properties - カードの情報項目と報告項目全てをテキスト表示する
+ */
+export type CardBody = {
+  name: string;
+  description?: string;
+  properties?: Property[];
+};
+
+/**
+ * ClipCrowでカードとして表現される様々なオブジェクト
  * @property type - カードの種類
  *  - WORKSPACE - ワークスペース
  *  - CARD - タスクや連絡などユーザーが作成したもの
@@ -22,11 +34,10 @@ export type Property = {
  *  - TAG - タググループ
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
- * @property name - カードのタイトルもしくは姓名
- * @property description - カードの説明文章。ボットがプロンプトに組み込む
- * @property properties - カードの情報項目と報告項目全てをテキスト表示する
+ * @property id - カードへAPIでアクセスする際に用いるためのID
+ * @property serial_no - カードの通し番号
  */
-export type CardBody = {
+export type Card = CardBody & {
   type:
     | "WORKSPACE"
     | "CARD"
@@ -37,17 +48,6 @@ export type CardBody = {
     | "TAG"
     | "BROWSER"
     | "SETTING";
-  name: string;
-  description?: string;
-  properties?: Property[];
-};
-
-/**
- * ClipCrowでカードとして表現される様々なオブジェクト
- * @property id - カードへAPIでアクセスする際に用いるためのID
- * @property serial_no - カードの通し番号
- */
-export type Card = CardBody & {
   id: string;
   serial_no?: number;
 };
