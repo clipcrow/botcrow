@@ -35,7 +35,7 @@ export type CardBody = {
  *  - TAG - タググループ
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
- * @property num - カードの通し番号 ワークスペースの場合は、特別に0にする
+ * @property serial - カードの通し番号 ワークスペースの場合は、特別に0にする
  */
 export type Card = CardBody & {
   type:
@@ -49,7 +49,7 @@ export type Card = CardBody & {
     | "TAG"
     | "BROWSER"
     | "SETTING";
-  num: number;
+  serial: number;
 };
 
 /**
@@ -154,7 +154,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     id: "abcdefgh-1234-5678-jkmn-p9123current",
     created_at: "2025-07-30T09:00:00.000000Z",
     actor: {
-      num: 28,
+      serial: 28,
       name: "サンプルユーザー",
       type: "STAFF",
     },
@@ -169,12 +169,12 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   bot: {
     type: "BOT",
-    num: 44,
+    serial: 44,
     name: "サンプルBOT",
   },
   card: {
     type: "CARD",
-    num: 123,
+    serial: 123,
     name: "サンプルカード",
     properties: [
       { name: "追加した項目", value: "0002" },
@@ -182,7 +182,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   workspace: {
     type: "WORKSPACE",
-    num: 0,
+    serial: 0,
     name: "サンプルワークスペース",
   }
 };
