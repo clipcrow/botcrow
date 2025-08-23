@@ -25,7 +25,6 @@ export type Property = {
  * @property name - カードのタイトルもしくは姓名
  * @property description - カードの説明文章。ボットがプロンプトに組み込む
  * @property properties - カードの情報項目と報告項目全てをテキスト表示する
- * @property serial_no - カードの通し番号
  */
 export type CardBody = {
   type:
@@ -41,15 +40,16 @@ export type CardBody = {
   name: string;
   description?: string;
   properties?: Property[];
-  serial_no?: number;
 };
 
 /**
  * ClipCrowでカードとして表現される様々なオブジェクト
  * @property id - カードへAPIでアクセスする際に用いるためのID
+ * @property serial_no - カードの通し番号
  */
 export type Card = CardBody & {
   id: string;
+  serial_no?: number;
 };
 
 /**
@@ -82,25 +82,25 @@ export type Attachment = {
  * @property annotation - Actionログに記載された操作対象
  * @property attachment - 書き込む画像・ロケーション・ログでの項目情報リストなど
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
- * @property thread_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  */
 export type MessageBody = {
   text: string;
   annotation?: string;
   attachment?: Attachment;
   metadata?: object;
-  thread_no?: number;
 };
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
+ * @property thread_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
+  thread_no?: number;
   created_at: string;
   actor: Card;
   reactions?: Reaction[];
