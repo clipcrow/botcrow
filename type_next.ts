@@ -12,11 +12,31 @@ export type Property = {
 
 /**
  * BOTとの送信と受信の両方で用いられるカードの内容
+ * @property type - カードの種類
+ *  - WORKSPACE - ワークスペース
+ *  - CARD - タスクや連絡などユーザーが作成したもの
+ *  - USER - ユーザー。管理者もしくはスタッフ
+ *  - GUEST - ゲストユーザー
+ *  - BOT - BOTアカウント
+ *  - TEMPLATE - テンプレート
+ *  - TAG - タググループ
+ *  - BROWSER - 組み込みブラウザで登録されたチャット
+ *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
  * @property name - カードのタイトルもしくは姓名
  * @property description - カードの説明文章。ボットがプロンプトに組み込む
  * @property properties - カードの情報項目と報告項目全てをテキスト表示する
  */
 export type CardBody = {
+  type:
+    | "WORKSPACE"
+    | "CARD"
+    | "USER"
+    | "GUEST"
+    | "BOT"
+    | "TEMPLATE"
+    | "TAG"
+    | "BROWSER"
+    | "SETTING";
   name: string;
   description?: string;
   properties?: Property[];
@@ -24,32 +44,12 @@ export type CardBody = {
 
 /**
  * ClipCrowでカードとして表現される様々なオブジェクト
- * @property type - カードの種類
- *  - WORKSPACE - ワークスペース
- *  - CARD - タスクや連絡などユーザーが作成したもの
- *  - MANAGER - 管理者
- *  - STAFF - スタッフ
- *  - GUEST - ゲストユーザー
- *  - BOT - BOTアカウント
- *  - TEMPLATE - テンプレート
- *  - TAG - タググループ
- *  - BROWSER - 組み込みブラウザで登録されたチャット
- *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
- * @property serial_no - カードの通し番号 ワークスペースの場合は、特別に0にする
+ * @property id - カードへAPIでアクセスする際に用いるためのID
+ * @property serial_no - カードの通し番号
  */
 export type Card = CardBody & {
-  type:
-    | "WORKSPACE"
-    | "CARD"
-    | "MANAGER"
-    | "STAFF"
-    | "GUEST"
-    | "BOT"
-    | "TEMPLATE"
-    | "TAG"
-    | "BROWSER"
-    | "SETTING";
-  serial_no: number;
+  id: string;
+  serial_no?: number;
 };
 
 /**
@@ -67,6 +67,7 @@ export type Reaction = {
  */
 export type Attachment = {
   type:
+    | "FILE"
     | "LOCATION"
     | "IMAGE"
     | "CARD"
@@ -155,9 +156,10 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     id: "abcdefgh-1234-5678-jkmn-p9123current",
     created_at: "2025-07-30T09:00:00.000000Z",
     actor: {
+      id: "af3619c9-8420-4f01-ad10-c117833d334e",
       serial_no: 28,
       name: "サンプルユーザー",
-      type: "STAFF",
+      type: "USER",
     },
     text: "編集",
     attachment: {
@@ -170,11 +172,13 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   bot: {
     type: "BOT",
+    id: "af3619c9-8420-4f01-ad10-c117833d334e",
     serial_no: 44,
     name: "サンプルBOT",
   },
   card: {
     type: "CARD",
+    id: "af3619c9-8420-4f01-ad10-c117833d334e",
     serial_no: 123,
     name: "サンプルカード",
     properties: [
@@ -183,7 +187,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   workspace: {
     type: "WORKSPACE",
-    serial_no: 0,
+    id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "サンプルワークスペース",
   }
 };
