@@ -35,7 +35,7 @@ export type CardBody = {
  *  - TAG - タググループ
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
- * @property serial - カードの通し番号 ワークスペースの場合は、特別に0にする
+ * @property serial_no - カードの通し番号 ワークスペースの場合は、特別に0にする
  */
 export type Card = CardBody & {
   type:
@@ -49,7 +49,7 @@ export type Card = CardBody & {
     | "TAG"
     | "BROWSER"
     | "SETTING";
-  serial: number;
+  serial_no: number;
 };
 
 /**
@@ -91,14 +91,14 @@ export type MessageBody = {
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
- * @property thread - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
+ * @property thread_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
-  thread?: number;
+  thread_no?: number;
   id: string;
   created_at: string;
   actor: Card;
@@ -151,10 +151,11 @@ export type ExecuteWebhookResponse = MessageBody | null | undefined;
 export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   action: "LOG",
   current: {
+    thread_no: 129,
     id: "abcdefgh-1234-5678-jkmn-p9123current",
     created_at: "2025-07-30T09:00:00.000000Z",
     actor: {
-      serial: 28,
+      serial_no: 28,
       name: "サンプルユーザー",
       type: "STAFF",
     },
@@ -169,12 +170,12 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   bot: {
     type: "BOT",
-    serial: 44,
+    serial_no: 44,
     name: "サンプルBOT",
   },
   card: {
     type: "CARD",
-    serial: 123,
+    serial_no: 123,
     name: "サンプルカード",
     properties: [
       { name: "追加した項目", value: "0002" },
@@ -182,7 +183,7 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
   },
   workspace: {
     type: "WORKSPACE",
-    serial: 0,
+    serial_no: 0,
     name: "サンプルワークスペース",
   }
 };
