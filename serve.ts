@@ -67,6 +67,11 @@ router.post("/", async (ctx) => {
   }
 });
 
+router.post("/log", (ctx) => {
+  console.log(ctx.request.body.json());
+  ctx.response.status = 200;
+});
+
 const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
