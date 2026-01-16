@@ -68,6 +68,7 @@ router.post("/", async (ctx) => {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Accept": "text/event-stream",
+          "Mcp-Session-Id": sessionId,
         },
       });
       
