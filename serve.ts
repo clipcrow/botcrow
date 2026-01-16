@@ -74,6 +74,15 @@ router.post("/", async (ctx) => {
                   if (schema.items) {
                       cleanGeminiSchema(schema.items);
                   }
+                  if (schema.allOf && Array.isArray(schema.allOf)) {
+                      schema.allOf.forEach(cleanGeminiSchema);
+                  }
+                  if (schema.anyOf && Array.isArray(schema.anyOf)) {
+                      schema.anyOf.forEach(cleanGeminiSchema);
+                  }
+                  if (schema.oneOf && Array.isArray(schema.oneOf)) {
+                      schema.oneOf.forEach(cleanGeminiSchema);
+                  }
               };
               // @ts-ignore: config is internal
               cleanGeminiSchema(config.inputSchema);
