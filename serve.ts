@@ -44,10 +44,12 @@ router.post("/", async (ctx) => {
         // 2. List Tools
         const result = await client.listTools();
         const tools = result.tools;
+        console.log(`[Debug] Listed ${tools.length} tools from MCP server.`);
 
         // Use SDK helper to convert MCP tools to Gemini tools
         // deno-lint-ignore no-explicit-any
         const geminiTools = tools.map((tool: any) => mcpToTool(tool));
+        // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
 
         // 3. Gemini Loop
         // deno-lint-ignore no-explicit-any
@@ -72,7 +74,8 @@ router.post("/", async (ctx) => {
             });
     
             const calls = result.functionCalls;
-            // if (result.text) console.log(result.text);
+            console.log(`[Debug] Turn ${i + 1}: Model generated ${calls?.length || 0} function calls.`);
+            if (result.text) console.log(`[Debug] Model thought:`, result.text);
             
             if (!calls || calls.length === 0) break;
     
