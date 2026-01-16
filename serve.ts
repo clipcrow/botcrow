@@ -37,7 +37,8 @@ router.post("/", async (ctx) => {
         }),
       });
       if (!response.ok) {
-        throw new Error(`MCP request failed: ${response.body}`);
+        const errorText = await response.text();
+        throw new Error(`MCP request failed: ${response.status} ${response.statusText} - ${errorText}`);
       }
       return await response.json();
     };
