@@ -54,65 +54,26 @@ router.post("/", async (ctx) => {
     };
 
     try {
-      // Generate sessionId first (client-side generation pattern)
-      let sessionId: string = crypto.randomUUID();
-      console.log(`Generated client-side sessionId: ${sessionId}`);
+      // Step 0: Session Establishment (Probe) - SKIPPED (Fails with 400)
+      // console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
+      // ... (Skipping GET)
 
-      // Step 0: Session Establishment (Probe)
-      console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
-      const connectUrl = new URL(endpoint);
-      // Remove sessionId from initial probe to diagnostics
-      // connectUrl.searchParams.set("sessionId", sessionId);
-
-      const connectResponse = await fetch(connectUrl, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "text/event-stream",
-        },
-      });
-      
-      if (!connectResponse.ok) {
-        const errorText = await connectResponse.text();
-        console.error(`GET request failed: ${connectResponse.status} ${connectResponse.statusText}`);
-        console.error(`Error details (Body): ${errorText}`);
-        
-        // Retry logic: If failed with 400, maybe try WITH session ID as fallback?
-        // But for now let's just observe.
-      } else {
-        console.log("GET request successful. Headers:", JSON.stringify([...connectResponse.headers.entries()]));
-        console.log("Response URL:", connectResponse.url);
-      }
-
-      // Check if server returned a different sessionId (e.g. redirect or header)
-      const responseUrl = new URL(connectResponse.url);
-      if (responseUrl.searchParams.has("sessionId")) {
-        const serverSessionId = responseUrl.searchParams.get("sessionId");
-        if (serverSessionId && serverSessionId !== sessionId) {
-           console.log(`Switching to server-provided sessionId: ${serverSessionId}`);
-           sessionId = serverSessionId;
-        }
-      } else if (connectResponse.headers.has("x-session-id")) {
-         const serverSessionId = connectResponse.headers.get("x-session-id");
-         if (serverSessionId && serverSessionId !== sessionId) {
-            console.log(`Switching to header-provided sessionId: ${serverSessionId}`);
-            sessionId = serverSessionId;
-         }
-      }
-
-      console.log(`Using final sessionId: ${sessionId}`);
+      let sessionId: string | undefined;
 
       // Step 0-1: initialize
-      console.log("Step 0-1: Sending initialize...");
+      console.log("Step 0-1: Sending initialize without sessionId...");
       const initParam = {
         protocolVersion: "2024-11-05",
         capabilities: {},
         clientInfo: { name: "botcrow-client", version: "1.0.0" },
       };
-      // 試しに initialize には sessionId を送らず、レスポンスを確認みる（オプション）
-      // いや、エラーが "Missing" なので送る必要がある。
-      // ここではレスポンスを詳細にログ出力する
-      const initMeta = await rpcRequest("initialize", initParam, 0, sessionId);
+      
+      // Pass undefined for sessionId
+      const initMeta = await rpcRequest("initialize", initParam, 0, undefined);
+      
+      // Check if we got a session ID from the initialize response?
+      // Since rpcRequest returns the JSON body, we might need to modify rpcRequest to return headers too 
+      // if we want to capture it. But let's first see if it succeeds.
       console.log("Initialize Response:", JSON.stringify(initMeta, null, 2));
 
       // 0-2. notifications/initialized
