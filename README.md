@@ -1,3 +1,3 @@
 # botcrow
 
-Sample AI Bot for ClipCrow CRM
+Sample AI Bot for ClipCrow

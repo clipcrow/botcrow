@@ -1,6 +1,8 @@
 {
   "imports": {
-    "std/": "https://deno.land/std@0.224.0/"
+    "std/": "https://deno.land/std@0.224.0/",
+    "@oak/oak": "jsr:@oak/oak@^17.2.0",
+    "@google/genai": "npm:@google/genai@^1.37.0"
   },
   "lock": false
 }

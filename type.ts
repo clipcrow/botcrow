@@ -9,13 +9,25 @@ export type Property = {
 };
 
 /**
+ * BOTとの送信と受信の両方で用いられるカードの内容
+ * @property name - カードのタイトルもしくは姓名
+ * @property description - カードの説明文章。ボットがプロンプトに組み込む
+ * @property properties - カードの情報項目と報告項目全てをテキスト表示する
+ * @property serial_no - カードの通し番号
+ */
+export type CardBody = {
+  name: string;
+  description?: string;
+  properties?: Property[];
+  serial_no: number;
+};
+
+/**
  * ClipCrowでカードとして表現される様々なオブジェクト
  * @property type - カードの種類
  *  - WORKSPACE - ワークスペース
  *  - CARD - タスクや連絡などユーザーが作成したもの
- *  - MANAGER - 管理者
- *  - STAFF - スタッフ
- *  - PARTNER - パートナー
+ *  - USER - ユーザー。管理者もしくはスタッフ
  *  - GUEST - ゲストユーザー
  *  - BOT - BOTアカウント
  *  - TEMPLATE - テンプレート
@@ -23,17 +35,12 @@ export type Property = {
  *  - BROWSER - 組み込みブラウザで登録されたチャット
  *  - SETTING - 設定トップ画面のチャット。ワークスペース設定、ナビゲーション設定など
  * @property id - カードへAPIでアクセスする際に用いるためのID
- * @property name - カードのタイトルもしくは姓名
- * @property description - カードの説明文章。ボットがプロンプトに組み込む
- * @property properties - カードの情報項目と報告項目全てをテキスト表示する
  */
-export type Card = {
+export type Card = CardBody & {
   type:
     | "WORKSPACE"
     | "CARD"
-    | "MANAGER"
-    | "STAFF"
-    | "PARTNER"
+    | "USER"
     | "GUEST"
     | "BOT"
     | "TEMPLATE"
@@ -41,9 +48,6 @@ export type Card = {
     | "BROWSER"
     | "SETTING";
   id: string;
-  name: string;
-  description?: string;
-  properties?: Property[];
 };
 
 /**
@@ -60,10 +64,12 @@ export type Reaction = {
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property text - 書き込むメッセージ
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
+ * @property serial_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  */
 export type MessageBody = {
   text: string;
   metadata?: object;
+  serial_no?: number;
 };
 
 /**
@@ -96,16 +102,36 @@ export type Message = MessageBody & {
  * @property card - チャットが所属するカードの情報
  * @property workspace - チャットが所属するワークスペースの情報
  */
-export type ExecuteWebhookRequest = {
-  action:
-    | "MENTION"
-    | "THREAD"
-    | "GUEST_USER_CHAT"
-    | "REACT_BOT_MESSAGE";
+export type McpSyncWebhookRequest = {
+  action: "MCP_SYNC";
+  bot: Card & {
+    mcp: {
+      endpoint: string;
+      token: string;
+    };
+  };
+  workspace: Card;
+};
+
+export type ReactBotMessageWebhookRequest = {
+  action: "REACT_BOT_MESSAGE";
   bot: Card;
-  reaction?: {
+  reaction: {
     emoji: string;
     actor: Card;
+  };
+  current: Message;
+  card: Card;
+  workspace: Card;
+};
+
+export type MentionWebhookRequest = {
+  action: "MENTION" | "THREAD" | "GUEST_USER_CHAT";
+  bot: Card & {
+    mcp?: {
+      endpoint: string;
+      token: string;
+    };
   };
   history?: Message[];
   current: Message;
@@ -113,83 +139,12 @@ export type ExecuteWebhookRequest = {
   workspace: Card;
 };
 
+export type ExecuteWebhookRequest =
+  | McpSyncWebhookRequest
+  | ReactBotMessageWebhookRequest
+  | MentionWebhookRequest;
+
 /**
  * BOTが作るWebHookの返信内容。BOTが書き込まないときにはレスポンスボディを空白にする
  */
 export type ExecuteWebhookResponse = MessageBody | null | undefined;
-
-// ############ WebHookの送受信サンプル ############
-
-export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
-  action: "MENTION",
-  bot: {
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "BOTCROW",
-    type: "BOT",
-  },
-  history: [
-    {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      created_at: "2025-05-10T06:19:58.859633Z",
-      actor: {
-        id: "af3619c9-8420-4f01-ad10-c117833d334e",
-        name: "目黒 太郎",
-        type: "MANAGER",
-        properties: [{ name: "plate", value: "品川 399 あ 0000" }],
-      },
-      text: "おすすめの旅行先をおしえてください。",
-    },
-    {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      created_at: "2025-05-10T06:19:58.859633Z",
-      actor: {
-        id: "af3619c9-8420-4f01-ad10-c117833d334e",
-        name: "BOTCROW",
-        type: "BOT",
-      },
-      text: "了解いたしました。もうすこし詳しく条件を教えて下さい。",
-      metadata: {
-        something_one: "12345678",
-        something_two: 1111,
-      },
-    },
-  ],
-  current: {
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    created_at: "2025-05-10T06:19:58.859633Z",
-    actor: {
-      id: "af3619c9-8420-4f01-ad10-c117833d334e",
-      name: "目黒 太郎",
-      type: "MANAGER",
-      properties: [{ name: "plate", value: "品川 399 あ 0000" }],
-    },
-    text: "東京から車でいける近場で、温泉が良い。",
-  },
-  card: {
-    type: "CARD",
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "general",
-    description:
-      "このチャットルームはワークスペース全体のコミュニケーションとチームへのアナウンス用です。",
-  },
-  workspace: {
-    type: "WORKSPACE",
-    id: "af3619c9-8420-4f01-ad10-c117833d334e",
-    name: "奥沢自動車産業",
-    description: "SUV専門、防犯装置取り付けなら都内施工数最多の当店へ",
-  },
-};
-
-export const SAMPLE_RESPONSE: ExecuteWebhookResponse = {
-  text: "箱根はいかがでしょうか。箱根は東京からも近く、温泉地として有名です。",
-  /*
-  attachment: {
-    media_type: "location",
-    value: "35.232290°N 139.105189°E",
-  },
-  */
-  metadata: {
-    something_one: "12345678",
-    something_two: 9999,
-  },
-};
