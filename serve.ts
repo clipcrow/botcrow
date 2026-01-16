@@ -163,7 +163,7 @@ router.post("/", async (ctx) => {
               利用可能なツール（例: Send_message など）を使用して、以下のチャットに「同期が完了しました」というメッセージを送信してください。
               
               ターゲットID (target_id): ${req.bot.id}
-              ターゲットタイプ (target_type): chats
+              ターゲットタイプ (target_type): records
               シリアル番号: ${req.bot.serial_no}
               
               ※ target_id が分かる場合は必ず target_id を使用してください。`,
