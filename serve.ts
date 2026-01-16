@@ -75,9 +75,9 @@ router.post("/", async (ctx) => {
                   }
               }
               
-              // Truncate description
-              if (schema.description && typeof schema.description === 'string' && schema.description.length > 200) {
-                  schema.description = schema.description.substring(0, 197) + "...";
+              // Remove property descriptions entirely to save "states"
+              if (schema.description && typeof schema.description === 'string') {
+                   delete schema.description;
               }
               
               // Fix Enums
@@ -120,17 +120,22 @@ router.post("/", async (ctx) => {
               }
           };
 
+          // Clean the input schema (this will remove nested descriptions)
           cleanGeminiSchema(inputSchema);
           
+          // For the tool itself, keep a short description
           let description = tool.description || "";
-          if (description.length > 1024) {
-              description = description.substring(0, 1021) + "...";
+          if (description.length > 150) {
+              description = description.substring(0, 147) + "...";
           }
+          // Remove newlines and excess whitespace which might add tokens
+          description = description.replace(/\s+/g, ' ').trim();
 
           return {
               name: tool.name,
               description: description,
-              parameters: inputSchema
+              // deno-lint-ignore no-explicit-any
+              parameters: inputSchema as any
           };
       });
 
