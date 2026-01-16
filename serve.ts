@@ -15,7 +15,6 @@ router.post("/", async (ctx) => {
   }
 
   const req: ExecuteWebhookRequest = await ctx.request.body.json();
-  console.log(req);
 
   if (req.action === "MCP_SYNC") {
     const { endpoint, token } = req.bot.mcp;
@@ -55,13 +54,12 @@ router.post("/", async (ctx) => {
         body: JSON.stringify(body),
       });
 
-      // DEBUG: Log correlation ID or Headers to find where session ID is coming from
+      // デバッグ: セッションIDの取得元を特定するためのヘッダーログ出力
       // console.log(`[${method}] Response Headers:`, JSON.stringify([...response.headers.entries()]));
 
-      // 1. Check for Session ID in Headers
+      // 1. ヘッダー内のセッションIDを確認
       const headerSessionId = response.headers.get("x-session-id") || response.headers.get("mcp-session-id");
       if (headerSessionId && headerSessionId !== sessionId) {
-         console.log(`Captured Session ID from headers: ${headerSessionId}`);
          sessionId = headerSessionId;
       }
       
@@ -94,17 +92,15 @@ router.post("/", async (ctx) => {
               currentEvent = line.slice(7).trim();
             } else if (line.startsWith("data: ")) {
               const dataStr = line.slice(6);
-              console.log(`SSE Received [${currentEvent}]: ${dataStr}`);
-
+              
               if (currentEvent === "endpoint") {
-                 // Endpoint event usually contains the URL for future POSTs, often with sessionId
-                 // dataStr might be a relative or absolute URL
+                 // endpoint イベントには通常、将来のPOSTリクエスト用URLが含まれており、セッションIDが付与されていることが多い
+                 // dataStr は相対URLまたは絶対URLの可能性がある
                  try {
-                    const uri = new URL(dataStr, endpoint); // resolve against base endpoint
+                    const uri = new URL(dataStr, endpoint); // ベースエンドポイントに対して解決
                     if (uri.searchParams.has("sessionId")) {
                         const newSessionId = uri.searchParams.get("sessionId");
                         if (newSessionId && newSessionId !== sessionId) {
-                            console.log(`Creating/Updating Session ID from SSE endpoint: ${newSessionId}`);
                             sessionId = newSessionId;
                         }
                     }
@@ -117,85 +113,68 @@ router.post("/", async (ctx) => {
                 const data = JSON.parse(dataStr);
                 if (data.id === id) {
                   result = data;
-                  // We found our result, but we might want to keep reading briefly or just return?
-                  // If we break here, we might miss an 'endpoint' event if it comes after?
-                  // Usually endpoint comes immediately. Let's return.
-                  // But wait, if we consume the stream, does it close? 
-                  // For now, let's assume we can return once we have the result.
+                  // 結果を取得できたため、終了する
+                  // 本来はストリームを継続監視すべき場合もあるが、endpointイベント等は通常直後に来るため、ここでリターンする
                   return result;
                 }
               } catch (_e) {
-                // Not JSON or not our response
+                // JSONでない、または対象外のレスポンス
               }
             }
           }
         }
         
         if (result) return result;
-        // For notifications (id === null), we might not expect a result with an ID.
-        // If it's a notification, we can just return success or null if stream ends.
+        // 通知 (id === null) の場合、ID付きの結果は期待されないため、ストリーム終了時にnullを返す
         if (id === null) return null; 
 
         throw new Error("Stream ended without JSON-RPC response");
       }
       
-      // If it's a notification and we got a normal response body (not SSE)
-      // We might expect empty body or valid JSON.
-      // But usually notifications don't get a response.
-      // If response body is empty, response.json() will fail.
+      // 通知リクエストで通常のレスポンスボディ（SSE以外）を受け取った場合
+      // 空のボディまたは有効なJSONを想定
+      // 通常、通知にはレスポンスがない
+      // レスポンスボディが空の場合、response.json() は失敗するためテキストとして取得して確認する
       const text = await response.text();
       if (!text) return null;
       return JSON.parse(text);
     };
 
     try {
-      // Step 0: Session Establishment (Probe) - SKIPPED (Fails with 400)
-      // console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
-      // ... (Skipping GET)
-
-
-      // Step 0-1: initialize
-      console.log("Step 0-1: Sending initialize without sessionId...");
+      // Step 0-1: 初期化 (セッション開始)
+      // 注意: サーバーにセッションIDを割り当てさせるため、セッションID無しで initialize を送信する
       const initParam = {
         protocolVersion: "2024-11-05",
         capabilities: {},
         clientInfo: { name: "botcrow-client", version: "1.0.0" },
       };
       
-      // Pass undefined for sessionId
-      const initMeta = await rpcRequest("initialize", initParam, 0, undefined);
+      const _initMeta = await rpcRequest("initialize", initParam, 0, undefined);
       
-      // Check if we got a session ID from the initialize response?
-      // Since rpcRequest returns the JSON body, we might need to modify rpcRequest to return headers too 
-      // if we want to capture it. But let's first see if it succeeds.
-      console.log("Initialize Response:", JSON.stringify(initMeta, null, 2));
-
-      // 0-2. notifications/initialized
-      console.log("Step 0-2: Sending initialized notification...");
+      // 0-2. 初期化完了の通知 (notifications/initialized)
       await rpcRequest("notifications/initialized", {}, null, sessionId);
 
-      // Step 1: ツール定義の変換 (MCP -> Gemini)
-      console.log("Step 1: Listing tools...");
+      // Step 1: ツールのリスト取得 (MCP -> Gemini)
       // deno-lint-ignore no-explicit-any
       const listResponse: any = await rpcRequest("tools/list", {}, 2, sessionId);
       // deno-lint-ignore no-explicit-any
       const tools: any[] = listResponse.result?.tools || [];
       
-      // Helper to remove unsupported keys like 'uniqueItems'
+      // 'uniqueItems' などの非対応キーを削除し、Enum型を強制的に文字列にするヘルパー関数
       // deno-lint-ignore no-explicit-any
       const cleanSchema = (schema: any): any => {
         if (!schema || typeof schema !== "object") return schema;
         if (Array.isArray(schema)) return schema.map(cleanSchema);
         
-        const { uniqueItems: _uniqueItems, ...rest } = schema; // Remove uniqueItems
+        const { uniqueItems: _uniqueItems, ...rest } = schema;
         
-        // Fix: Convert enum values to strings
+        // Gemini向けの修正: Enumの値は文字列でなければならず、型も 'string' である必要がある
         if (rest.enum && Array.isArray(rest.enum)) {
           rest.enum = rest.enum.map((v: unknown) => String(v));
-          rest.type = "string"; // Force type to string if enum matches
+          rest.type = "string";
         }
         
-        // Recursively clean properties and items
+        // プロパティとアイテムを再帰的にクリーニング
         for (const key in rest) {
           rest[key] = cleanSchema(rest[key]);
         }
@@ -209,7 +188,7 @@ router.post("/", async (ctx) => {
         parameters: cleanSchema(tool.inputSchema),
       }));
 
-      // Step 3: Gemini API 実行 (Function Calling Loop)
+      // Step 3: Gemini ループ実行 (Function Calling)
       // deno-lint-ignore no-explicit-any
       const historyRequest: any[] = [
         {
@@ -235,36 +214,30 @@ router.post("/", async (ctx) => {
 
         const calls = result.functionCalls;
         
-        // Response contains text?
-        if (result.text) {
-             console.log("Model Text Response:", result.text);
-             // If we got text, we might be done, or it might be accompanying tool calls.
-             // Usually for "Sync" action we just want the chain to complete.
-        }
+        // テキスト応答があればログ出力（最終応答の可能性がある）
+        //if (result.text) {
+             // console.log(result.text); 
+        //}
         
         if (!calls || calls.length === 0) {
-            console.log("No more function calls. Sync flow finished.");
             break;
         }
 
-        // Add model's response (tool calls) to history
+        // モデルの応答（ツール呼び出し）を履歴に追加
         historyRequest.push({
             role: "model",
             parts: result.candidates?.[0]?.content?.parts || [],
         });
 
-         // Execute tools
+         // ツールを実行
          const functionResponses = [];
          for (const call of calls) {
-            console.log(`Calling tool: ${call.name} with args:`, call.args);
             try {
                 // deno-lint-ignore no-explicit-any
                 const toolResult: any = await rpcRequest("tools/call", {
                     name: call.name,
                     arguments: call.args,
-                }, 3, sessionId);
-                
-                console.log(`Tool ${call.name} result:`, JSON.stringify(toolResult));
+                }, 3, sessionId); // ツール呼び出しに固定ID '3' を使用（複数は紛らわしいかもしれないが、このスコープでは許容）
 
                 functionResponses.push({
                     name: call.name,
@@ -282,7 +255,7 @@ router.post("/", async (ctx) => {
             }
          }
 
-         // Add function responses to history
+         // 関数の実行結果を履歴に追加
          historyRequest.push({
              role: "function",
              parts: functionResponses.map(resp => ({
