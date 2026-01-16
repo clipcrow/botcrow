@@ -48,8 +48,34 @@ router.post("/", async (ctx) => {
 
       // Use SDK helper to convert MCP tools to Gemini tools
       // deno-lint-ignore no-explicit-any
-      const geminiTools = tools.map((tool: any) => mcpToTool(tool));
-      console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
+      const geminiTools = tools.map((tool: any) => {
+          const geminiTool = mcpToTool(tool);
+          // Patch: mcpToTool does not convert enum values to strings, which Gemini requires.
+          // @ts-ignore: Accessing internal config property
+          if (geminiTool.config?.inputSchema) {
+              // deno-lint-ignore no-explicit-any
+              const fixEnums = (schema: any) => {
+                  if (!schema || typeof schema !== "object") return;
+                  if (schema.enum && Array.isArray(schema.enum)) {
+                      schema.enum = schema.enum.map(String);
+                      schema.type = "string"; // Force type to string for enums
+                  }
+                  if (schema.properties) {
+                       for (const key in schema.properties) {
+                           fixEnums(schema.properties[key]);
+                       }
+                  }
+                  if (schema.items) {
+                      fixEnums(schema.items);
+                  }
+              };
+              // @ts-ignore: Accessing internal config property
+              fixEnums(geminiTool.config.inputSchema);
+          }
+          return geminiTool;
+      });
+      
+      // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
 
       // 3. Gemini Loop
       // deno-lint-ignore no-explicit-any
