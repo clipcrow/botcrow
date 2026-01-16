@@ -55,23 +55,28 @@ router.post("/", async (ctx) => {
           
           if (config?.inputSchema) {
               // deno-lint-ignore no-explicit-any
-              const fixEnums = (schema: any) => {
+              const cleanGeminiSchema = (schema: any) => {
                   if (!schema || typeof schema !== "object") return;
+                  
+                  // Delete unsupported fields
+                  if (schema.uniqueItems) delete schema.uniqueItems;
+                  
                   if (schema.enum && Array.isArray(schema.enum)) {
                       schema.enum = schema.enum.map(String);
                       schema.type = "string"; // Force type to string for enums
                   }
+                  
                   if (schema.properties) {
                        for (const key in schema.properties) {
-                           fixEnums(schema.properties[key]);
+                           cleanGeminiSchema(schema.properties[key]);
                        }
                   }
                   if (schema.items) {
-                      fixEnums(schema.items);
+                      cleanGeminiSchema(schema.items);
                   }
               };
               // @ts-ignore: config is internal
-              fixEnums(config.inputSchema);
+              cleanGeminiSchema(config.inputSchema);
           }
           
           // Map to FunctionDeclaration structure expected by Gemini API
