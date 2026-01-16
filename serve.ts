@@ -1,6 +1,6 @@
 import { Application, Router } from "@oak/oak";
 import { load } from "std/dotenv/mod.ts";
-import { GoogleGenAI, mcpToTool } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import type { ExecuteWebhookRequest } from "./type.ts";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
@@ -35,114 +35,106 @@ router.post("/", async (ctx) => {
 
     const client = new Client(
       { name: "botcrow-client", version: "1.0.0" },
-//      { capabilities: {} },
+      { capabilities: {} },
     );
 
     try {
       await client.connect(transport);
 
-      /*
       // 2. List Tools
       const result = await client.listTools();
       const tools = result.tools;
       console.log(`[Debug] Listed ${tools.length} tools from MCP server.`);
 
-      // Use SDK helper to convert MCP tools to Gemini tools
+      // 2. Convert MCP tools to Gemini FunctionDeclarations manually
+      // mcpToTool produces schemas that are too complex for Gemini serving (e.g. "too many states").
+      // We manually map and aggressively clean the schema here.
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => {
-          const geminiTool = mcpToTool(tool);
-          // @ts-ignore: Accessing internal config property
-          const config = geminiTool.config; // Extract config
-          
-          if (config?.inputSchema) {
-              // deno-lint-ignore no-explicit-any
-              const cleanGeminiSchema = (schema: any) => {
-                  if (!schema || typeof schema !== "object") return;
-                  
-                  // Delete unsupported fields and complex constraints that cause "too many states"
-                  const unsafeFields = [
-                      'uniqueItems', 'format', 'pattern', 
-                      'minLength', 'maxLength', 
-                      'minimum', 'maximum', 
-                      'exclusiveMinimum', 'exclusiveMaximum',
-                      'multipleOf',
-                      'title', 'default', 'examples',
-                      'allOf', 'anyOf', 'oneOf' // Remove combinators explicitly
-                  ];
-                  for (const field of unsafeFields) {
-                      if (Object.prototype.hasOwnProperty.call(schema, field)) {
-                          delete schema[field];
-                      }
+          // Deep clone the input schema to avoid mutating the original
+          const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
+
+          // Aggressive schema cleaner
+          // deno-lint-ignore no-explicit-any
+          const cleanGeminiSchema = (schema: any) => {
+              if (!schema || typeof schema !== "object") return;
+              
+              // Delete unsupported fields and complex constraints
+              const unsafeFields = [
+                  'uniqueItems', 'format', 'pattern', 
+                  'minLength', 'maxLength', 
+                  'minimum', 'maximum', 
+                  'exclusiveMinimum', 'exclusiveMaximum',
+                  'multipleOf',
+                  'title', 'default', 'examples',
+                  'allOf', 'anyOf', 'oneOf' 
+              ];
+              for (const field of unsafeFields) {
+                  if (Object.prototype.hasOwnProperty.call(schema, field)) {
+                      delete schema[field];
                   }
-                  
-                  // Truncate description if too long
-                  if (schema.description && typeof schema.description === 'string' && schema.description.length > 200) {
-                      schema.description = schema.description.substring(0, 197) + "...";
-                  }
-                  
-                  if (schema.enum && Array.isArray(schema.enum)) {
-                      // Truncate enum if too many options (optional optimization)
-                      // schema.enum = schema.enum.slice(0, 50).map(String);
-                      schema.enum = schema.enum.map(String);
-                      schema.type = "string"; // Force type to string for enums
-                  }
-                  
-                  if (schema.properties) {
-                       for (const key in schema.properties) {
-                           cleanGeminiSchema(schema.properties[key]);
-                       }
-                  }
-                  if (schema.items) {
-                      if (Array.isArray(schema.items)) {
-                          // Array of items (tuple) is not supported well in this context, simplify to first or generic
-                          if (schema.items.length > 0) {
-                              const firstItem = schema.items[0];
-                              cleanGeminiSchema(firstItem);
-                              schema.items = firstItem; // Use first item as the type for all
-                          } else {
-                              delete schema.items; // Unknown items
-                          }
+              }
+              
+              // Truncate description
+              if (schema.description && typeof schema.description === 'string' && schema.description.length > 200) {
+                  schema.description = schema.description.substring(0, 197) + "...";
+              }
+              
+              // Fix Enums
+              if (schema.enum && Array.isArray(schema.enum)) {
+                  schema.enum = schema.enum.map(String);
+                  schema.type = "string"; 
+              }
+              
+              // Recursion
+              if (schema.properties) {
+                   for (const key in schema.properties) {
+                       cleanGeminiSchema(schema.properties[key]);
+                   }
+              }
+              if (schema.items) {
+                  if (Array.isArray(schema.items)) {
+                      if (schema.items.length > 0) {
+                          const firstItem = schema.items[0];
+                          cleanGeminiSchema(firstItem);
+                          schema.items = firstItem; 
                       } else {
-                          cleanGeminiSchema(schema.items);
+                          delete schema.items; 
                       }
+                  } else {
+                      cleanGeminiSchema(schema.items);
                   }
-                  // Recursion for definitions skipped as we strip combinators usage usually, 
-                  // but harmless to keep if needed, though combinators are gone now.
-                  if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
-                      cleanGeminiSchema(schema.additionalProperties);
+              }
+              if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+                  cleanGeminiSchema(schema.additionalProperties);
+              }
+              if (schema.definitions) {
+                  for (const key in schema.definitions) {
+                      cleanGeminiSchema(schema.definitions[key]);
                   }
-                  if (schema.definitions) {
-                      for (const key in schema.definitions) {
-                          cleanGeminiSchema(schema.definitions[key]);
-                      }
-                  }
-                  if (schema.$defs) {
-                       for (const key in schema.$defs) {
-                          cleanGeminiSchema(schema.$defs[key]);
-                       }
-                  }
-              };
-              // @ts-ignore: config is internal
-              cleanGeminiSchema(config.inputSchema);
-          }
+              }
+              if (schema.$defs) {
+                   for (const key in schema.$defs) {
+                      cleanGeminiSchema(schema.$defs[key]);
+                   }
+              }
+          };
+
+          cleanGeminiSchema(inputSchema);
           
-          let description = config.description || "";
+          let description = tool.description || "";
           if (description.length > 1024) {
               description = description.substring(0, 1021) + "...";
           }
-          
-          // Map to FunctionDeclaration structure expected by Gemini API
+
           return {
-              // @ts-ignore: config is internal
-              name: config.name,
+              name: tool.name,
               description: description,
-              // @ts-ignore: config is internal
-              parameters: config.inputSchema // Rename inputSchema to parameters
+              parameters: inputSchema
           };
       });
-      
-      console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
-      */
+
+      console.log(`[Debug] Converted tools (Manual):`, JSON.stringify(geminiTools, null, 2));
 
       // 3. Gemini Loop
       // deno-lint-ignore no-explicit-any
@@ -161,8 +153,7 @@ router.post("/", async (ctx) => {
         const result = await ai.models.generateContent({
           model: "gemini-2.5-flash",
           config: { 
-//            tools: [{ functionDeclarations: geminiTools }],
-            tools: [mcpToTool(client)],
+            tools: [{ functionDeclarations: geminiTools }],
             // @ts-ignore: "ANY" is a valid mode string at runtime
             toolConfig: { functionCallingConfig: { mode: "ANY" } } // Force tool usage
           },
