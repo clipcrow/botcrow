@@ -192,6 +192,7 @@ router.post("/", async (ctx) => {
         // Fix: Convert enum values to strings
         if (rest.enum && Array.isArray(rest.enum)) {
           rest.enum = rest.enum.map((v: unknown) => String(v));
+          rest.type = "string"; // Force type to string if enum matches
         }
         
         // Recursively clean properties and items
