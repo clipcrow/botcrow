@@ -59,23 +59,26 @@ router.post("/", async (ctx) => {
       console.log(`Generated client-side sessionId: ${sessionId}`);
 
       // Step 0: Session Establishment (Probe)
-      console.log("Step 0: Establishing session via GET...");
+      console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
       const connectUrl = new URL(endpoint);
-      connectUrl.searchParams.set("sessionId", sessionId);
+      // Remove sessionId from initial probe to diagnostics
+      // connectUrl.searchParams.set("sessionId", sessionId);
 
       const connectResponse = await fetch(connectUrl, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Accept": "text/event-stream",
-          "Mcp-Session-Id": sessionId,
         },
       });
       
       if (!connectResponse.ok) {
         const errorText = await connectResponse.text();
         console.error(`GET request failed: ${connectResponse.status} ${connectResponse.statusText}`);
-        console.error(`Error details: ${errorText}`);
+        console.error(`Error details (Body): ${errorText}`);
+        
+        // Retry logic: If failed with 400, maybe try WITH session ID as fallback?
+        // But for now let's just observe.
       } else {
         console.log("GET request successful. Headers:", JSON.stringify([...connectResponse.headers.entries()]));
         console.log("Response URL:", connectResponse.url);
