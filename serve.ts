@@ -51,10 +51,22 @@ router.post("/", async (ctx) => {
       // We manually map and aggressively clean the schema here.
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => {
+          // Optimization: Only provide full schema for "Send_message" to avoid "too many states" error.
+          // For other tools, provide a generic object schema to allow the model to see them but not enforce strict grammar.
+          const isCriticalTool = tool.name === "Send_message";
+
+          if (!isCriticalTool) {
+               return {
+                   name: tool.name,
+                   description: (tool.description || "").substring(0, 100),
+                   parameters: { type: "object" }
+               };
+          }
+
+          // Aggressive schema cleaner (only for critical tools)
           // Deep clone the input schema to avoid mutating the original
           const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
 
-          // Aggressive schema cleaner
           // deno-lint-ignore no-explicit-any
           const cleanGeminiSchema = (schema: any) => {
               if (!schema || typeof schema !== "object") return;
