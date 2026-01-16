@@ -171,8 +171,7 @@ router.post("/", async (ctx) => {
           model: "gemini-2.5-flash",
           config: { 
             tools: [{ functionDeclarations: geminiTools }],
-            // @ts-ignore: "ANY" is a valid mode string at runtime
-            toolConfig: { functionCallingConfig: { mode: "ANY" } } // Force tool usage
+            // toolConfig: { functionCallingConfig: { mode: "AUTO" } } // Default to AUTO
           },
           contents: historyRequest,
         });
@@ -198,13 +197,15 @@ router.post("/", async (ctx) => {
             console.warn(`[Warn] Skipping unnamed tool call:`, call);
             continue;
           }
-          // console.log(`[Info] Calling tool: ${call.name}`);
+          console.log(`[Info] Calling tool: ${call.name} with args:`, JSON.stringify(call.args));
           try {
             // Execute tool via SDK
             const toolResult = await client.callTool({
               name: call.name,
               arguments: call.args || {},
             });
+            
+            console.log(`[Info] Tool result:`, JSON.stringify(toolResult).substring(0, 200) + "...");
 
             functionResponses.push({
               name: call.name,
