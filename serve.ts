@@ -24,7 +24,8 @@ router.post("/", async (ctx) => {
     // JSON-RPCリクエストを送信するヘルパー関数
     const rpcRequest = async (method: string, params?: unknown, id: number = 1) => {
       const url = new URL(endpoint);
-      url.searchParams.set("sessionId", crypto.randomUUID());
+      const sid = crypto.randomUUID();
+      //url.searchParams.set("session_id", sid);
 
       const response = await fetch(url, {
         method: "POST",
@@ -32,6 +33,7 @@ router.post("/", async (ctx) => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
           "Accept": "application/json, text/event-stream",
+          "Mcp-Session-Id": sid,
         },
         body: JSON.stringify({
           jsonrpc: "2.0",
