@@ -49,7 +49,7 @@ router.post("/", async (ctx) => {
       // Use SDK helper to convert MCP tools to Gemini tools
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => mcpToTool(tool));
-      // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
+      console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
 
       // 3. Gemini Loop
       // deno-lint-ignore no-explicit-any
