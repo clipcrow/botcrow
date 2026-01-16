@@ -58,10 +58,18 @@ router.post("/", async (ctx) => {
               const cleanGeminiSchema = (schema: any) => {
                   if (!schema || typeof schema !== "object") return;
                   
-                  // Delete unsupported fields
-                  if (Object.prototype.hasOwnProperty.call(schema, 'uniqueItems')) {
-                      // console.log("[Debug] removing uniqueItems from schema");
-                      delete schema.uniqueItems;
+                  // Delete unsupported fields and complex constraints that cause "too many states"
+                  const unsafeFields = [
+                      'uniqueItems', 'format', 'pattern', 
+                      'minLength', 'maxLength', 
+                      'minimum', 'maximum', 
+                      'exclusiveMinimum', 'exclusiveMaximum',
+                      'multipleOf'
+                  ];
+                  for (const field of unsafeFields) {
+                      if (Object.prototype.hasOwnProperty.call(schema, field)) {
+                          delete schema[field];
+                      }
                   }
                   
                   if (schema.enum && Array.isArray(schema.enum)) {
