@@ -53,7 +53,7 @@ router.post("/", async (ctx) => {
       const geminiTools = tools.map((tool: any) => {
           // Optimization: Only provide full schema for "Send_message" to avoid "too many states" error.
           // For other tools, provide a generic object schema to allow the model to see them but not enforce strict grammar.
-          const isCriticalTool = tool.name === "Send_message";
+          const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
           if (!isCriticalTool) {
                return {
@@ -160,7 +160,13 @@ router.post("/", async (ctx) => {
           role: "user",
           parts: [{
               text: `MCP設定同期ボタンがクリックされました。
-              利用可能なツール（例: send_message など）を使用して、シリアル番号が ${req.bot.serial_no} のチャットに、「同期が完了しました」という旨のメッセージを実際に送信してください。`,
+              利用可能なツール（例: Send_message など）を使用して、以下のチャットに「同期が完了しました」というメッセージを送信してください。
+              
+              ターゲットID (target_id): ${req.bot.id}
+              ターゲットタイプ (target_type): chats
+              シリアル番号: ${req.bot.serial_no}
+              
+              ※ target_id が分かる場合は必ず target_id を使用してください。`,
           }],
         },
       ];
