@@ -50,9 +50,10 @@ router.post("/", async (ctx) => {
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => {
           const geminiTool = mcpToTool(tool);
-          // Patch: mcpToTool does not convert enum values to strings, which Gemini requires.
           // @ts-ignore: Accessing internal config property
-          if (geminiTool.config?.inputSchema) {
+          const config = geminiTool.config; // Extract config
+          
+          if (config?.inputSchema) {
               // deno-lint-ignore no-explicit-any
               const fixEnums = (schema: any) => {
                   if (!schema || typeof schema !== "object") return;
@@ -69,13 +70,22 @@ router.post("/", async (ctx) => {
                       fixEnums(schema.items);
                   }
               };
-              // @ts-ignore: Accessing internal config property
-              fixEnums(geminiTool.config.inputSchema);
+              // @ts-ignore: config is internal
+              fixEnums(config.inputSchema);
           }
-          return geminiTool;
+          
+          // Map to FunctionDeclaration structure expected by Gemini API
+          return {
+              // @ts-ignore: config is internal
+              name: config.name,
+              // @ts-ignore: config is internal
+              description: config.description,
+              // @ts-ignore: config is internal
+              parameters: config.inputSchema // Rename inputSchema to parameters
+          };
       });
       
-      // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
+      console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
 
       // 3. Gemini Loop
       // deno-lint-ignore no-explicit-any
@@ -83,8 +93,8 @@ router.post("/", async (ctx) => {
         {
           role: "user",
           parts: [{
-            text: `MCP設定同期ボタンがクリックされました。利用可能なツール（例: send_message など）を使用して、
-            シリアル番号が ${req.bot.serial_no} のチャットに、「同期が完了しました」という旨のメッセージを実際に送信してください。`,
+              text: `MCP設定同期ボタンがクリックされました。
+              利用可能なツール（例: send_message など）を使用して、シリアル番号が ${req.bot.serial_no} のチャットに、「同期が完了しました」という旨のメッセージを実際に送信してください。`,
           }],
         },
       ];
@@ -93,9 +103,11 @@ router.post("/", async (ctx) => {
       for (let i = 0; i < maxTurns; i++) {
         const result = await ai.models.generateContent({
           model: "gemini-2.5-flash",
-          // mcpToTool returns a Tool object compliant with the SDK, so pass it directly
-          // @ts-ignore: SDK types might differ slightly in Deno vs Node for mcpToTool return
-          config: { tools: geminiTools },
+          config: { 
+            tools: [{ functionDeclarations: geminiTools }],
+            // @ts-ignore: "ANY" is a valid mode string at runtime
+            toolConfig: { functionCallingConfig: { mode: "ANY" } } // Force tool usage
+          },
           contents: historyRequest,
         });
 
