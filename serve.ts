@@ -50,7 +50,73 @@ router.post("/", async (ctx) => {
         const errorText = await response.text();
         throw new Error(`MCP request failed: ${response.status} ${response.statusText} - ${errorText}`);
       }
-      return await response.json(); // notificationの場合はnullが返るかも？要確認だが今回はresponse.json()で統一
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("text/event-stream")) {
+        const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
+        if (!reader) throw new Error("No body in SSE response");
+
+        let buffer = "";
+        let result = null;
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          
+          buffer += value;
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          let currentEvent = "message";
+
+          for (const line of lines) {
+            if (line.trim() === "") continue;
+            
+            if (line.startsWith("event: ")) {
+              currentEvent = line.slice(7).trim();
+            } else if (line.startsWith("data: ")) {
+              const dataStr = line.slice(6);
+              console.log(`SSE Received [${currentEvent}]: ${dataStr}`);
+
+              if (currentEvent === "endpoint") {
+                 // Endpoint event usually contains the URL for future POSTs, often with sessionId
+                 // dataStr might be a relative or absolute URL
+                 try {
+                    const uri = new URL(dataStr, endpoint); // resolve against base endpoint
+                    if (uri.searchParams.has("sessionId")) {
+                        const newSessionId = uri.searchParams.get("sessionId");
+                        if (newSessionId && newSessionId !== sessionId) {
+                            console.log(`Creating/Updating Session ID from SSE endpoint: ${newSessionId}`);
+                            sessionId = newSessionId;
+                        }
+                    }
+                 } catch (e) {
+                    console.error("Failed to parse endpoint URL:", e);
+                 }
+              }
+
+              try {
+                const data = JSON.parse(dataStr);
+                if (data.id === id) {
+                  result = data;
+                  // We found our result, but we might want to keep reading briefly or just return?
+                  // If we break here, we might miss an 'endpoint' event if it comes after?
+                  // Usually endpoint comes immediately. Let's return.
+                  // But wait, if we consume the stream, does it close? 
+                  // For now, let's assume we can return once we have the result.
+                  return result;
+                }
+              } catch (e) {
+                // Not JSON or not our response
+              }
+            }
+          }
+        }
+        
+        if (result) return result;
+        throw new Error("Stream ended without JSON-RPC response");
+      }
+      
+      return await response.json();
     };
 
     try {
