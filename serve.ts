@@ -54,11 +54,42 @@ router.post("/", async (ctx) => {
     };
 
     try {
-      const sessionId = crypto.randomUUID();
-      console.log(`Generated sessionId: ${sessionId}`);
+      // Step 0: Session Establishment (Probe)
+      console.log("Step 0: Establishing session via GET...");
+      const connectResponse = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "text/event-stream",
+        },
+      });
+      
+      if (!connectResponse.ok) {
+        console.error(`GET request failed: ${connectResponse.status} ${connectResponse.statusText}`);
+         // Fallback or throw? Let's log and continue with random UUID for now if it fails, 
+         // but detailed logs are key.
+      } else {
+        console.log("GET request successful. Headers:", JSON.stringify([...connectResponse.headers.entries()]));
+        // SSEの場合はボディを少し読んでみる等の処理が必要だが、
+        // まずはヘッダーに x-session-id などがないか、あるいはリダイレクトURLがないかを確認。
+        // リクエストURL自体が変わっている可能性もある
+        console.log("Response URL:", connectResponse.url);
+      }
 
-      // Step 0: MCP Handshake
-      // 0-1. initialize
+      // とりあえず独自のUUIDを使うが、GETレスポンスのURLに `?sessionId=` が付いている場合はそれを使う
+      let sessionId: string = crypto.randomUUID();
+      const responseUrl = new URL(connectResponse.url);
+      if (responseUrl.searchParams.has("sessionId")) {
+        sessionId = responseUrl.searchParams.get("sessionId")!;
+        console.log(`Obtained sessionId from URL: ${sessionId}`);
+      } else if (connectResponse.headers.has("x-session-id")) {
+         sessionId = connectResponse.headers.get("x-session-id")!;
+         console.log(`Obtained sessionId from header: ${sessionId}`);
+      } else {
+         console.log(`Using generated sessionId: ${sessionId}`);
+      }
+
+      // Step 0-1: initialize
       console.log("Step 0-1: Sending initialize...");
       const initParam = {
         protocolVersion: "2024-11-05",
