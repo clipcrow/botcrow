@@ -189,6 +189,11 @@ router.post("/", async (ctx) => {
         
         const { uniqueItems: _uniqueItems, ...rest } = schema; // Remove uniqueItems
         
+        // Fix: Convert enum values to strings
+        if (rest.enum && Array.isArray(rest.enum)) {
+          rest.enum = rest.enum.map((v: unknown) => String(v));
+        }
+        
         // Recursively clean properties and items
         for (const key in rest) {
           rest[key] = cleanSchema(rest[key]);
