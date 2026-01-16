@@ -19,6 +19,7 @@ router.post("/", async (ctx) => {
 
   if (req.action === "MCP_SYNC") {
     const { endpoint, token } = req.bot.mcp;
+    console.log({ endpoint, token });
     
     // JSON-RPCリクエストを送信するヘルパー関数
     const rpcRequest = async (method: string, params?: unknown, id: number = 1) => {
@@ -36,7 +37,7 @@ router.post("/", async (ctx) => {
         }),
       });
       if (!response.ok) {
-        throw new Error(`MCP request failed: ${response.statusText}`);
+        throw new Error(`MCP request failed: ${response.body}`);
       }
       return await response.json();
     };
@@ -89,7 +90,7 @@ router.post("/", async (ctx) => {
       }
 
     } catch (e) {
-      console.error("MCP Sync error:", e);
+      console.error(e);
     }
 
     ctx.response.status = 200;
