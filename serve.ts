@@ -20,11 +20,15 @@ router.post("/", async (ctx) => {
   if (req.action === "MCP_SYNC") {
     const { endpoint, token } = req.bot.mcp;
     
+    let sessionId: string | undefined;
+
     // JSON-RPCリクエストを送信するヘルパー関数
-    const rpcRequest = async (method: string, params?: unknown, id: number = 1, sessionId?: string) => {
+    const rpcRequest = async (method: string, params?: unknown, id: number = 1, overrideSessionId?: string) => {
+      const effectiveSessionId = overrideSessionId ?? sessionId;
+      
       const url = new URL(endpoint);
-      if (sessionId) {
-        url.searchParams.set("sessionId", sessionId);
+      if (effectiveSessionId) {
+        url.searchParams.set("sessionId", effectiveSessionId);
       }
 
       const headers: Record<string, string> = {
@@ -32,8 +36,8 @@ router.post("/", async (ctx) => {
         "Authorization": `Bearer ${token}`,
         "Accept": "application/json, text/event-stream",
       };
-      if (sessionId) {
-        headers["Mcp-Session-Id"] = sessionId;
+      if (effectiveSessionId) {
+        headers["Mcp-Session-Id"] = effectiveSessionId;
       }
 
       const response = await fetch(url, {
@@ -46,6 +50,17 @@ router.post("/", async (ctx) => {
           id,
         }),
       });
+
+      // DEBUG: Log correlation ID or Headers to find where session ID is coming from
+      // console.log(`[${method}] Response Headers:`, JSON.stringify([...response.headers.entries()]));
+
+      // 1. Check for Session ID in Headers
+      const headerSessionId = response.headers.get("x-session-id") || response.headers.get("mcp-session-id");
+      if (headerSessionId && headerSessionId !== sessionId) {
+         console.log(`Captured Session ID from headers: ${headerSessionId}`);
+         sessionId = headerSessionId;
+      }
+      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`MCP request failed: ${response.status} ${response.statusText} - ${errorText}`);
@@ -105,7 +120,7 @@ router.post("/", async (ctx) => {
                   // For now, let's assume we can return once we have the result.
                   return result;
                 }
-              } catch (e) {
+              } catch (_e) {
                 // Not JSON or not our response
               }
             }
@@ -124,7 +139,7 @@ router.post("/", async (ctx) => {
       // console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
       // ... (Skipping GET)
 
-      let sessionId: string | undefined;
+
 
       // Step 0-1: initialize
       console.log("Step 0-1: Sending initialize without sessionId...");
