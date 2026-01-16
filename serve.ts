@@ -59,7 +59,10 @@ router.post("/", async (ctx) => {
                   if (!schema || typeof schema !== "object") return;
                   
                   // Delete unsupported fields
-                  if (schema.uniqueItems) delete schema.uniqueItems;
+                  if (Object.prototype.hasOwnProperty.call(schema, 'uniqueItems')) {
+                      // console.log("[Debug] removing uniqueItems from schema");
+                      delete schema.uniqueItems;
+                  }
                   
                   if (schema.enum && Array.isArray(schema.enum)) {
                       schema.enum = schema.enum.map(String);
@@ -72,7 +75,11 @@ router.post("/", async (ctx) => {
                        }
                   }
                   if (schema.items) {
-                      cleanGeminiSchema(schema.items);
+                      if (Array.isArray(schema.items)) {
+                          schema.items.forEach(cleanGeminiSchema);
+                      } else {
+                          cleanGeminiSchema(schema.items);
+                      }
                   }
                   if (schema.allOf && Array.isArray(schema.allOf)) {
                       schema.allOf.forEach(cleanGeminiSchema);
@@ -82,6 +89,19 @@ router.post("/", async (ctx) => {
                   }
                   if (schema.oneOf && Array.isArray(schema.oneOf)) {
                       schema.oneOf.forEach(cleanGeminiSchema);
+                  }
+                  if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+                      cleanGeminiSchema(schema.additionalProperties);
+                  }
+                  if (schema.definitions) {
+                      for (const key in schema.definitions) {
+                          cleanGeminiSchema(schema.definitions[key]);
+                      }
+                  }
+                  if (schema.$defs) {
+                       for (const key in schema.$defs) {
+                          cleanGeminiSchema(schema.$defs[key]);
+                       }
                   }
               };
               // @ts-ignore: config is internal
