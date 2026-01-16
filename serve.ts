@@ -65,7 +65,8 @@ router.post("/", async (ctx) => {
                       'minimum', 'maximum', 
                       'exclusiveMinimum', 'exclusiveMaximum',
                       'multipleOf',
-                      'title', 'default', 'examples'
+                      'title', 'default', 'examples',
+                      'allOf', 'anyOf', 'oneOf' // Remove combinators explicitly
                   ];
                   for (const field of unsafeFields) {
                       if (Object.prototype.hasOwnProperty.call(schema, field)) {
@@ -74,11 +75,13 @@ router.post("/", async (ctx) => {
                   }
                   
                   // Truncate description if too long
-                  if (schema.description && typeof schema.description === 'string' && schema.description.length > 1024) {
-                      schema.description = schema.description.substring(0, 1021) + "...";
+                  if (schema.description && typeof schema.description === 'string' && schema.description.length > 200) {
+                      schema.description = schema.description.substring(0, 197) + "...";
                   }
                   
                   if (schema.enum && Array.isArray(schema.enum)) {
+                      // Truncate enum if too many options (optional optimization)
+                      // schema.enum = schema.enum.slice(0, 50).map(String);
                       schema.enum = schema.enum.map(String);
                       schema.type = "string"; // Force type to string for enums
                   }
@@ -90,20 +93,20 @@ router.post("/", async (ctx) => {
                   }
                   if (schema.items) {
                       if (Array.isArray(schema.items)) {
-                          schema.items.forEach(cleanGeminiSchema);
+                          // Array of items (tuple) is not supported well in this context, simplify to first or generic
+                          if (schema.items.length > 0) {
+                              const firstItem = schema.items[0];
+                              cleanGeminiSchema(firstItem);
+                              schema.items = firstItem; // Use first item as the type for all
+                          } else {
+                              delete schema.items; // Unknown items
+                          }
                       } else {
                           cleanGeminiSchema(schema.items);
                       }
                   }
-                  if (schema.allOf && Array.isArray(schema.allOf)) {
-                      schema.allOf.forEach(cleanGeminiSchema);
-                  }
-                  if (schema.anyOf && Array.isArray(schema.anyOf)) {
-                      schema.anyOf.forEach(cleanGeminiSchema);
-                  }
-                  if (schema.oneOf && Array.isArray(schema.oneOf)) {
-                      schema.oneOf.forEach(cleanGeminiSchema);
-                  }
+                  // Recursion for definitions skipped as we strip combinators usage usually, 
+                  // but harmless to keep if needed, though combinators are gone now.
                   if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
                       cleanGeminiSchema(schema.additionalProperties);
                   }
