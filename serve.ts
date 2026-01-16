@@ -55,25 +55,28 @@ router.post("/", async (ctx) => {
 
     try {
       const sessionId = crypto.randomUUID();
+      console.log(`Generated sessionId: ${sessionId}`);
 
       // Step 0: MCP Handshake
       // 0-1. initialize
-      await rpcRequest(
-        "initialize",
-        {
-          protocolVersion: "2024-11-05",
-          capabilities: {},
-          clientInfo: { name: "botcrow-client", version: "1.0.0" },
-        },
-        0,
-        sessionId
-      );
+      console.log("Step 0-1: Sending initialize...");
+      const initParam = {
+        protocolVersion: "2024-11-05",
+        capabilities: {},
+        clientInfo: { name: "botcrow-client", version: "1.0.0" },
+      };
+      // 試しに initialize には sessionId を送らず、レスポンスを確認みる（オプション）
+      // いや、エラーが "Missing" なので送る必要がある。
+      // ここではレスポンスを詳細にログ出力する
+      const initMeta = await rpcRequest("initialize", initParam, 0, sessionId);
+      console.log("Initialize Response:", JSON.stringify(initMeta, null, 2));
 
       // 0-2. notifications/initialized
-      // Notificationなのでレスポンスを待つが結果は使わない
+      console.log("Step 0-2: Sending initialized notification...");
       await rpcRequest("notifications/initialized", {}, 1, sessionId);
 
       // Step 1: ツール定義の変換 (MCP -> Gemini)
+      console.log("Step 1: Listing tools...");
       // deno-lint-ignore no-explicit-any
       const listResponse: any = await rpcRequest("tools/list", {}, 2, sessionId);
       // deno-lint-ignore no-explicit-any
