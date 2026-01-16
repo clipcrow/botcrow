@@ -20,107 +20,110 @@ router.post("/", async (ctx) => {
 
   if (req.action === "MCP_SYNC") {
     const { endpoint, token } = req.bot.mcp;
-    
+
     console.log("[Info] Starting MCP Sync with SDK (StreamableHTTP)...");
 
     // 1. Setup Transport with Auth Header
     const transport = new StreamableHTTPClientTransport(new URL(endpoint), {
-        // StreamableHTTPClientTransport supports requestInit for custom headers
-        requestInit: {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
+      // StreamableHTTPClientTransport supports requestInit for custom headers
+      requestInit: {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      },
     });
 
     const client = new Client(
-        { name: "botcrow-client", version: "1.0.0" },
-        { capabilities: {} }
+      { name: "botcrow-client", version: "1.0.0" },
+      { capabilities: {} },
     );
 
     try {
-        await client.connect(transport);
+      await client.connect(transport);
 
-        // 2. List Tools
-        const result = await client.listTools();
-        const tools = result.tools;
-        console.log(`[Debug] Listed ${tools.length} tools from MCP server.`);
+      // 2. List Tools
+      const result = await client.listTools();
+      const tools = result.tools;
+      console.log(`[Debug] Listed ${tools.length} tools from MCP server.`);
 
-        // Use SDK helper to convert MCP tools to Gemini tools
-        // deno-lint-ignore no-explicit-any
-        const geminiTools = tools.map((tool: any) => mcpToTool(tool));
-        // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
+      // Use SDK helper to convert MCP tools to Gemini tools
+      // deno-lint-ignore no-explicit-any
+      const geminiTools = tools.map((tool: any) => mcpToTool(tool));
+      // console.log(`[Debug] Converted tools:`, JSON.stringify(geminiTools, null, 2));
 
-        // 3. Gemini Loop
-        // deno-lint-ignore no-explicit-any
-        const historyRequest: any[] = [
-            {
-              role: "user",
-              parts: [{
-                  text: `MCP設定同期ボタンがクリックされました。
-                  シリアル番号が ${req.bot.serial_no} のチャットに同期された旨のメッセージを書き出してください。`,
-              }],
-            },
-        ];
+      // 3. Gemini Loop
+      // deno-lint-ignore no-explicit-any
+      const historyRequest: any[] = [
+        {
+          role: "user",
+          parts: [{
+            text: `MCP設定同期ボタンがクリックされました。利用可能なツール（例: send_message など）を使用して、
+            シリアル番号が ${req.bot.serial_no} のチャットに、「同期が完了しました」という旨のメッセージを実際に送信してください。`,
+          }],
+        },
+      ];
 
-        const maxTurns = 5;
-        for (let i = 0; i < maxTurns; i++) {
-            const result = await ai.models.generateContent({
-              model: "gemini-2.5-flash",
-              // mcpToTool returns a Tool object compliant with the SDK, so pass it directly
-              // @ts-ignore: SDK types might differ slightly in Deno vs Node for mcpToTool return
-              config: { tools: geminiTools },
-              contents: historyRequest,
+      const maxTurns = 5;
+      for (let i = 0; i < maxTurns; i++) {
+        const result = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          // mcpToTool returns a Tool object compliant with the SDK, so pass it directly
+          // @ts-ignore: SDK types might differ slightly in Deno vs Node for mcpToTool return
+          config: { tools: geminiTools },
+          contents: historyRequest,
+        });
+
+        const calls = result.functionCalls;
+        console.log(
+          `[Debug] Turn ${i + 1}: Model generated ${
+            calls?.length || 0
+          } function calls.`,
+        );
+        if (result.text) console.log(`[Debug] Model thought:`, result.text);
+
+        if (!calls || calls.length === 0) break;
+
+        historyRequest.push({
+          role: "model",
+          parts: result.candidates?.[0]?.content?.parts || [],
+        });
+
+        const functionResponses = [];
+        for (const call of calls) {
+          if (!call.name) {
+            console.warn(`[Warn] Skipping unnamed tool call:`, call);
+            continue;
+          }
+          // console.log(`[Info] Calling tool: ${call.name}`);
+          try {
+            // Execute tool via SDK
+            const toolResult = await client.callTool({
+              name: call.name,
+              arguments: call.args || {},
             });
-    
-            const calls = result.functionCalls;
-            console.log(`[Debug] Turn ${i + 1}: Model generated ${calls?.length || 0} function calls.`);
-            if (result.text) console.log(`[Debug] Model thought:`, result.text);
-            
-            if (!calls || calls.length === 0) break;
-    
-            historyRequest.push({
-                role: "model",
-                parts: result.candidates?.[0]?.content?.parts || [],
+
+            functionResponses.push({
+              name: call.name,
+              response: { name: call.name, content: toolResult },
             });
-    
-            const functionResponses = [];
-            for (const call of calls) {
-                if (!call.name) {
-                    console.warn(`[Warn] Skipping unnamed tool call:`, call);
-                    continue;
-                }
-                // console.log(`[Info] Calling tool: ${call.name}`);
-                try {
-                    // Execute tool via SDK
-                    const toolResult = await client.callTool({
-                        name: call.name,
-                        arguments: call.args || {},
-                    });
-    
-                    functionResponses.push({
-                        name: call.name,
-                        response: { name: call.name, content: toolResult }
-                    });
-                } catch (e) {
-                    console.error(`[Error] Tool execution failed for ${call.name}:`, e);
-                    functionResponses.push({
-                        name: call.name,
-                        response: { error: String(e) }
-                    });
-                }
-            }
-    
-            historyRequest.push({
-                role: "function",
-                parts: functionResponses.map(resp => ({ functionResponse: resp }))
+          } catch (e) {
+            console.error(`[Error] Tool execution failed for ${call.name}:`, e);
+            functionResponses.push({
+              name: call.name,
+              response: { error: String(e) },
             });
+          }
         }
 
+        historyRequest.push({
+          role: "function",
+          parts: functionResponses.map((resp) => ({ functionResponse: resp })),
+        });
+      }
     } catch (e) {
-        console.error("[Error] MCP Sync failed:", e);
+      console.error("[Error] MCP Sync failed:", e);
     } finally {
-        // SDK connection cleanup if necessary
+      // SDK connection cleanup if necessary
     }
 
     ctx.response.status = 200;
@@ -142,9 +145,9 @@ router.post("/", async (ctx) => {
   }
 
   const model = "gemini-2.5-flash";
-  const systemInstruction = 
-    "Be clear and short, don't try to answer everything at once," + 
-    " and try to keep the conversation going with your users."; 
+  const systemInstruction =
+    "Be clear and short, don't try to answer everything at once," +
+    " and try to keep the conversation going with your users.";
   let result;
 
   if (req.history && req.history.length > 0) {

@@ -71,8 +71,7 @@ export type Attachment = {
     | "LOCATION"
     | "IMAGE"
     | "CARD"
-    | "PROPERTIES"
-  ;
+    | "PROPERTIES";
   value: string | Card | Property[];
 };
 
@@ -129,8 +128,7 @@ export type ExecuteWebhookRequest = {
     | "THREAD"
     | "GUEST_USER_CHAT"
     | "REACT_BOT_MESSAGE"
-    | "LOG"
-  ;
+    | "LOG";
   bot: Card;
   reaction?: {
     emoji: string;
@@ -188,5 +186,5 @@ export const SAMPLE_REQUEST: ExecuteWebhookRequest = {
     type: "WORKSPACE",
     id: "af3619c9-8420-4f01-ad10-c117833d334e",
     name: "サンプルワークスペース",
-  }
+  },
 };
