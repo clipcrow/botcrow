@@ -25,11 +25,8 @@ router.post("/", async (ctx) => {
 
     // 1. Setup Transport with Auth Header
     const transport = new StreamableHTTPClientTransport(new URL(endpoint), {
-      // StreamableHTTPClientTransport supports requestInit for custom headers
       requestInit: {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Authorization": `Bearer ${token}` },
       },
     });
 
@@ -44,29 +41,31 @@ router.post("/", async (ctx) => {
       // 2. List Tools
       const result = await client.listTools();
       const tools = result.tools;
-      console.log(`[Debug] Listed ${tools.length} tools from MCP server.`);
 
-      // 2. Convert MCP tools to Gemini FunctionDeclarations manually
+      // 3. Convert MCP tools to Gemini FunctionDeclarations manually
       // mcpToTool produces schemas that are too complex for Gemini serving (e.g. "too many states").
-      // We manually map and aggressively clean the schema here.
+      // We manually map and aggressively clean the schema here for compatibility.
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => {
-          // Optimization: Only provide full schema for "Send_message" to avoid "too many states" error.
-          // For other tools, provide a generic object schema to allow the model to see them but not enforce strict grammar.
+          // Optimization: Only provide full schema for "Send_message" and "Get_*" tools.
+          // For other tools, provide a generic object schema to reduce total schema state size.
           const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
           if (!isCriticalTool) {
                return {
                    name: tool.name,
-                   description: (tool.description || "").substring(0, 100),
+                   description: (tool.description || "").substring(0, 100).replace(/\s+/g, ' ').trim(),
                    parameters: { type: "object" }
                };
           }
 
-          // Aggressive schema cleaner (only for critical tools)
           // Deep clone the input schema to avoid mutating the original
           const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
 
+          /**
+           * Recursively cleans the JSON schema to meet Gemini API's strict serving constraints.
+           * Removes unsupported fields, combinators, and excessive metadata.
+           */
           // deno-lint-ignore no-explicit-any
           const cleanGeminiSchema = (schema: any) => {
               if (!schema || typeof schema !== "object") return;
@@ -87,18 +86,18 @@ router.post("/", async (ctx) => {
                   }
               }
               
-              // Remove property descriptions entirely to save "states"
+              // Remove property descriptions entirely to reduce state count
               if (schema.description && typeof schema.description === 'string') {
                    delete schema.description;
               }
               
-              // Fix Enums
+              // Fix Enums: ensure they are strings
               if (schema.enum && Array.isArray(schema.enum)) {
                   schema.enum = schema.enum.map(String);
                   schema.type = "string"; 
               }
               
-              // Recursion
+              // Recursion for properties, items, definitions
               if (schema.properties) {
                    for (const key in schema.properties) {
                        cleanGeminiSchema(schema.properties[key]);
@@ -132,15 +131,14 @@ router.post("/", async (ctx) => {
               }
           };
 
-          // Clean the input schema (this will remove nested descriptions)
+          // Clean the input schema
           cleanGeminiSchema(inputSchema);
           
-          // For the tool itself, keep a short description
+          // Truncate tool description
           let description = tool.description || "";
           if (description.length > 150) {
               description = description.substring(0, 147) + "...";
           }
-          // Remove newlines and excess whitespace which might add tokens
           description = description.replace(/\s+/g, ' ').trim();
 
           return {
@@ -151,9 +149,7 @@ router.post("/", async (ctx) => {
           };
       });
 
-      console.log(`[Debug] Converted tools (Manual):`, JSON.stringify(geminiTools, null, 2));
-
-      // 3. Gemini Loop
+      // 4. Gemini Loop
       // deno-lint-ignore no-explicit-any
       const historyRequest: any[] = [
         {
@@ -178,19 +174,11 @@ router.post("/", async (ctx) => {
           model: "gemini-2.5-flash",
           config: { 
             tools: [{ functionDeclarations: geminiTools }],
-            // toolConfig: { functionCallingConfig: { mode: "AUTO" } } // Default to AUTO
           },
           contents: historyRequest,
         });
 
         const calls = result.functionCalls;
-        console.log(
-          `[Debug] Turn ${i + 1}: Model generated ${
-            calls?.length || 0
-          } function calls.`,
-        );
-        if (result.text) console.log(`[Debug] Model thought:`, result.text);
-
         if (!calls || calls.length === 0) break;
 
         historyRequest.push({
@@ -200,11 +188,8 @@ router.post("/", async (ctx) => {
 
         const functionResponses = [];
         for (const call of calls) {
-          if (!call.name) {
-            console.warn(`[Warn] Skipping unnamed tool call:`, call);
-            continue;
-          }
-          console.log(`[Info] Calling tool: ${call.name} with args:`, JSON.stringify(call.args));
+          if (!call.name) continue;
+          
           try {
             // Execute tool via SDK
             const toolResult = await client.callTool({
@@ -212,8 +197,6 @@ router.post("/", async (ctx) => {
               arguments: call.args || {},
             });
             
-            console.log(`[Info] Tool result:`, JSON.stringify(toolResult).substring(0, 200) + "...");
-
             functionResponses.push({
               name: call.name,
               response: { name: call.name, content: toolResult },
