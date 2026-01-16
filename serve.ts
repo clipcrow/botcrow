@@ -64,12 +64,18 @@ router.post("/", async (ctx) => {
                       'minLength', 'maxLength', 
                       'minimum', 'maximum', 
                       'exclusiveMinimum', 'exclusiveMaximum',
-                      'multipleOf'
+                      'multipleOf',
+                      'title', 'default', 'examples'
                   ];
                   for (const field of unsafeFields) {
                       if (Object.prototype.hasOwnProperty.call(schema, field)) {
                           delete schema[field];
                       }
+                  }
+                  
+                  // Truncate description if too long
+                  if (schema.description && typeof schema.description === 'string' && schema.description.length > 1024) {
+                      schema.description = schema.description.substring(0, 1021) + "...";
                   }
                   
                   if (schema.enum && Array.isArray(schema.enum)) {
@@ -116,12 +122,16 @@ router.post("/", async (ctx) => {
               cleanGeminiSchema(config.inputSchema);
           }
           
+          let description = config.description || "";
+          if (description.length > 1024) {
+              description = description.substring(0, 1021) + "...";
+          }
+          
           // Map to FunctionDeclaration structure expected by Gemini API
           return {
               // @ts-ignore: config is internal
               name: config.name,
-              // @ts-ignore: config is internal
-              description: config.description,
+              description: description,
               // @ts-ignore: config is internal
               parameters: config.inputSchema // Rename inputSchema to parameters
           };
