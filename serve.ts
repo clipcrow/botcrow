@@ -28,6 +28,7 @@ router.post("/", async (ctx) => {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
+          "Accept": "application/json, text/event-stream",
         },
         body: JSON.stringify({
           jsonrpc: "2.0",
