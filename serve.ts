@@ -23,7 +23,7 @@ router.post("/", async (ctx) => {
     let sessionId: string | undefined;
 
     // JSON-RPCリクエストを送信するヘルパー関数
-    const rpcRequest = async (method: string, params?: unknown, id: number = 1, overrideSessionId?: string) => {
+    const rpcRequest = async (method: string, params?: unknown, id: number | null = 1, overrideSessionId?: string) => {
       const effectiveSessionId = overrideSessionId ?? sessionId;
       
       const url = new URL(endpoint);
@@ -40,15 +40,19 @@ router.post("/", async (ctx) => {
         headers["Mcp-Session-Id"] = effectiveSessionId;
       }
 
+      const body: Record<string, unknown> = {
+        jsonrpc: "2.0",
+        method,
+        params,
+      };
+      if (id !== null) {
+        body.id = id;
+      }
+
       const response = await fetch(url, {
         method: "POST",
         headers,
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method,
-          params,
-          id,
-        }),
+        body: JSON.stringify(body),
       });
 
       // DEBUG: Log correlation ID or Headers to find where session ID is coming from
@@ -128,17 +132,26 @@ router.post("/", async (ctx) => {
         }
         
         if (result) return result;
+        // For notifications (id === null), we might not expect a result with an ID.
+        // If it's a notification, we can just return success or null if stream ends.
+        if (id === null) return null; 
+
         throw new Error("Stream ended without JSON-RPC response");
       }
       
-      return await response.json();
+      // If it's a notification and we got a normal response body (not SSE)
+      // We might expect empty body or valid JSON.
+      // But usually notifications don't get a response.
+      // If response body is empty, response.json() will fail.
+      const text = await response.text();
+      if (!text) return null;
+      return JSON.parse(text);
     };
 
     try {
       // Step 0: Session Establishment (Probe) - SKIPPED (Fails with 400)
       // console.log(`Step 0: Establishing session via GET (Probe) to ${endpoint} (Token len: ${token?.length})`);
       // ... (Skipping GET)
-
 
 
       // Step 0-1: initialize
@@ -159,7 +172,7 @@ router.post("/", async (ctx) => {
 
       // 0-2. notifications/initialized
       console.log("Step 0-2: Sending initialized notification...");
-      await rpcRequest("notifications/initialized", {}, 1, sessionId);
+      await rpcRequest("notifications/initialized", {}, null, sessionId);
 
       // Step 1: ツール定義の変換 (MCP -> Gemini)
       console.log("Step 1: Listing tools...");
@@ -168,11 +181,26 @@ router.post("/", async (ctx) => {
       // deno-lint-ignore no-explicit-any
       const tools: any[] = listResponse.result?.tools || [];
       
+      // Helper to remove unsupported keys like 'uniqueItems'
+      // deno-lint-ignore no-explicit-any
+      const cleanSchema = (schema: any): any => {
+        if (!schema || typeof schema !== "object") return schema;
+        if (Array.isArray(schema)) return schema.map(cleanSchema);
+        
+        const { uniqueItems: _uniqueItems, ...rest } = schema; // Remove uniqueItems
+        
+        // Recursively clean properties and items
+        for (const key in rest) {
+          rest[key] = cleanSchema(rest[key]);
+        }
+        return rest;
+      };
+
       // deno-lint-ignore no-explicit-any
       const geminiTools = tools.map((tool: any) => ({
         name: tool.name,
         description: tool.description,
-        parameters: tool.inputSchema,
+        parameters: cleanSchema(tool.inputSchema),
       }));
 
       // Step 3: Gemini API 実行 (Function Calling)
