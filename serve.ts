@@ -23,7 +23,10 @@ router.post("/", async (ctx) => {
     
     // JSON-RPCリクエストを送信するヘルパー関数
     const rpcRequest = async (method: string, params?: unknown, id: number = 1) => {
-      const response = await fetch(endpoint, {
+      const url = new URL(endpoint);
+      url.searchParams.set("sessionId", crypto.randomUUID());
+
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
