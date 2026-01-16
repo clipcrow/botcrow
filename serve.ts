@@ -54,9 +54,16 @@ router.post("/", async (ctx) => {
     };
 
     try {
+      // Generate sessionId first (client-side generation pattern)
+      let sessionId: string = crypto.randomUUID();
+      console.log(`Generated client-side sessionId: ${sessionId}`);
+
       // Step 0: Session Establishment (Probe)
       console.log("Step 0: Establishing session via GET...");
-      const connectResponse = await fetch(endpoint, {
+      const connectUrl = new URL(endpoint);
+      connectUrl.searchParams.set("sessionId", sessionId);
+
+      const connectResponse = await fetch(connectUrl, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -65,29 +72,31 @@ router.post("/", async (ctx) => {
       });
       
       if (!connectResponse.ok) {
+        const errorText = await connectResponse.text();
         console.error(`GET request failed: ${connectResponse.status} ${connectResponse.statusText}`);
-         // Fallback or throw? Let's log and continue with random UUID for now if it fails, 
-         // but detailed logs are key.
+        console.error(`Error details: ${errorText}`);
       } else {
         console.log("GET request successful. Headers:", JSON.stringify([...connectResponse.headers.entries()]));
-        // SSEの場合はボディを少し読んでみる等の処理が必要だが、
-        // まずはヘッダーに x-session-id などがないか、あるいはリダイレクトURLがないかを確認。
-        // リクエストURL自体が変わっている可能性もある
         console.log("Response URL:", connectResponse.url);
       }
 
-      // とりあえず独自のUUIDを使うが、GETレスポンスのURLに `?sessionId=` が付いている場合はそれを使う
-      let sessionId: string = crypto.randomUUID();
+      // Check if server returned a different sessionId (e.g. redirect or header)
       const responseUrl = new URL(connectResponse.url);
       if (responseUrl.searchParams.has("sessionId")) {
-        sessionId = responseUrl.searchParams.get("sessionId")!;
-        console.log(`Obtained sessionId from URL: ${sessionId}`);
+        const serverSessionId = responseUrl.searchParams.get("sessionId");
+        if (serverSessionId && serverSessionId !== sessionId) {
+           console.log(`Switching to server-provided sessionId: ${serverSessionId}`);
+           sessionId = serverSessionId;
+        }
       } else if (connectResponse.headers.has("x-session-id")) {
-         sessionId = connectResponse.headers.get("x-session-id")!;
-         console.log(`Obtained sessionId from header: ${sessionId}`);
-      } else {
-         console.log(`Using generated sessionId: ${sessionId}`);
+         const serverSessionId = connectResponse.headers.get("x-session-id");
+         if (serverSessionId && serverSessionId !== sessionId) {
+            console.log(`Switching to header-provided sessionId: ${serverSessionId}`);
+            sessionId = serverSessionId;
+         }
       }
+
+      console.log(`Using final sessionId: ${sessionId}`);
 
       // Step 0-1: initialize
       console.log("Step 0-1: Sending initialize...");
