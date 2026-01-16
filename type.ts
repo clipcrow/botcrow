@@ -86,79 +86,91 @@ export type Message = MessageBody & {
   reactions?: Reaction[];
 };
 
-export type MentionWebhookRequest = {
-  action: "MENTION" | "THREAD" | "GUEST_USER_CHAT";
-  bot: Card;
-  history?: Message[];
-  current: Message;
-  card: Card;
-  workspace: Card;
-};
-
-export type ReactBotMessageWebhookRequest = {
-  action: "REACT_BOT_MESSAGE";
-  bot: Card;
-  reaction: {
-    emoji: string;
-    actor: Card;
-  };
-  current: Message;
-  card: Card;
-  workspace: Card;
-};
-
-export type McpSyncWebhookRequest = {
-  action: "MCP_SYNC";
-  bot: Card & {
-    mcp: {
-      endpoint: string;
-      token: string;
-    };
-  };
-  workspace: Card;
-};
-
-export type OpenViewWebhookRequest = {
-  action: "OPEN_VIEW";
-  card: Card;
-  workspace: Card;
-};
+/**
+ * WebHookの発生理由を示すアクションタイプ
+ * - MENTION - BOTを明示的にメンションしたとき
+ * - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
+ * - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
+ * - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
+ * - MCP_SYNC - MCP設定同期ボタンがクリックされたとき
+ * - OPEN_VIEW - 組み込みブラウザでビューを開くリクエスト。HTMLを返す。
+ */
+export type ExecuteWebhookAction =
+  | "MENTION"
+  | "THREAD"
+  | "GUEST_USER_CHAT"
+  | "REACT_BOT_MESSAGE"
+  | "MCP_SYNC"
+  | "OPEN_VIEW";
 
 /**
  * ClipCrowからBOTのエンドポイントへ送信されるWebHookのペイロード
- * @property action - WebHookの発生理由。
- *  - MENTION - BOTを明示的にメンションしたとき
- *  - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
- *  - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
- *  - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
- *  - MCP_SYNC - MCP設定同期ボタンがクリックされたとき
- *  - OPEN_VIEW - 組み込みブラウザでビューを開くリクエスト。HTMLを返す。
+ * アクションによってペイロードの構造が変化する
+ * @property action - WebHookの発生理由
  * @property bot - WebHookが送信されたBOTの情報
- * @property reaction - 今回のWebHookを送信したリアクションの絵文字。REACT_BOT_MESSAGEの場合のみ
- *  - emoji - 絵文字テキスト
- *  - actor - リアクションを送信したユーザー
- * @property history - スレッド内の会話の過去履歴で、今回のWebHookを送信したメッセージは含まない
+ * @property reaction - 今回のWebHookを送信したリアクションの絵文字(REACT_BOT_MESSAGEのみ)
+ * @property history - スレッド内の会話の過去履歴(MENTION/THREAD/GUEST_USER_CHATのみ)
  * @property current - 今回のWebHookを送信したメッセージ
  * @property card - チャットが所属するカードの情報
  * @property workspace - チャットが所属するワークスペースの情報
  */
-export type ExecuteWebhookRequest =
-  | MentionWebhookRequest
-  | ReactBotMessageWebhookRequest
-  | McpSyncWebhookRequest
-  | OpenViewWebhookRequest;
+export type ExecuteWebhookRequest<
+  A extends ExecuteWebhookAction = ExecuteWebhookAction
+> = A extends "MENTION" | "THREAD" | "GUEST_USER_CHAT"
+  ? {
+      action: A;
+      bot: Card;
+      history?: Message[];
+      current: Message;
+      card: Card;
+      workspace: Card;
+    }
+  : A extends "REACT_BOT_MESSAGE"
+  ? {
+      action: A;
+      bot: Card;
+      reaction: {
+        emoji: string;
+        actor: Card;
+      };
+      current: Message;
+      card: Card;
+      workspace: Card;
+    }
+  : A extends "MCP_SYNC"
+  ? {
+      action: A;
+      bot: Card & {
+        mcp: {
+          endpoint: string;
+          token: string;
+        };
+      };
+      workspace: Card;
+    }
+  : A extends "OPEN_VIEW"
+  ? {
+      action: A;
+      card: Card;
+      workspace: Card;
+    }
+  : never;
 
 /**
- * BOTが作るWebHookの返信内容。BOTが書き込まないときにはレスポンスボディを空白にする
+ * BOTが作るWebHookの返信内容。
+ * Actionによって期待される返信が異なる。
+ * - MENTION / THREAD / GUEST_USER_CHAT: MessageBody (メッセージ返信)
+ * - REACT_BOT_MESSAGE / MCP_SYNC: null (返信なし)
+ * - OPEN_VIEW: string (HTMLコンテンツ)
  */
 export type ExecuteWebhookResponse<
-  T extends ExecuteWebhookRequest = ExecuteWebhookRequest
-> = T extends MentionWebhookRequest
+  A extends ExecuteWebhookAction = ExecuteWebhookAction
+> = A extends "MENTION" | "THREAD" | "GUEST_USER_CHAT"
   ? MessageBody
-  : T extends ReactBotMessageWebhookRequest
+  : A extends "REACT_BOT_MESSAGE"
   ? null
-  : T extends McpSyncWebhookRequest
+  : A extends "MCP_SYNC"
   ? null
-  : T extends OpenViewWebhookRequest
+  : A extends "OPEN_VIEW"
   ? string
   : never;
