@@ -92,6 +92,8 @@ export type Message = MessageBody & {
  * - THREAD - MENTIONによって作られたスレッド内で、会話の続きとしてメンションなしで書き込まれたとき
  * - GUEST_USER_CHAT - ゲスト側チャットのトップレベルでメンションなしで書き込まれたとき
  * - REACT_BOT_MESSAGE - BOTによる書き込みにリアクションが追加されたとき
+ * - LOG - BOTがファシリテーターであるカードにActionログが発生したとき
+ * - CRON - 統合エージェントのスケジュール
  * - MCP_SYNC - MCP設定同期ボタンがクリックされたとき
  * - OPEN_VIEW - 組み込みブラウザでビューを開くリクエスト。HTMLを返す。
  */
@@ -100,6 +102,7 @@ export type ExecuteWebhookAction =
   | "THREAD"
   | "GUEST_USER_CHAT"
   | "REACT_BOT_MESSAGE"
+  | "LOG"
   | "MCP_SYNC"
   | "OPEN_VIEW";
 
@@ -108,9 +111,10 @@ export type ExecuteWebhookAction =
  * アクションによってペイロードの構造が変化する
  * @property action - WebHookの発生理由
  * @property bot - WebHookが送信されたBOTの情報
+ * @property bot.mcp - ClipCrow MCPサーバーへの接続設定
  * @property reaction - 今回のWebHookを送信したリアクションの絵文字(REACT_BOT_MESSAGEのみ)
  * @property history - スレッド内の会話の過去履歴(MENTION/THREAD/GUEST_USER_CHATのみ)
- * @property current - 今回のWebHookを送信したメッセージ
+ * @property current - 今回のWebHookを送信したメッセージもしくはActionログ
  * @property card - チャットが所属するカードの情報
  * @property workspace - チャットが所属するワークスペースの情報
  */
@@ -129,10 +133,15 @@ export type ExecuteWebhookRequest<
   ? {
       action: A;
       bot: Card;
-      reaction: {
-        emoji: string;
-        actor: Card;
-      };
+      reaction: Reaction;
+      current: Message;
+      card: Card;
+      workspace: Card;
+    }
+  : A extends "LOG"
+  ? {
+      action: A;
+      bot: Card;
       current: Message;
       card: Card;
       workspace: Card;
@@ -160,16 +169,14 @@ export type ExecuteWebhookRequest<
  * BOTが作るWebHookの返信内容。
  * Actionによって期待される返信が異なる。
  * - MENTION / THREAD / GUEST_USER_CHAT: MessageBody (メッセージ返信)
- * - REACT_BOT_MESSAGE / MCP_SYNC: null (返信なし)
+ * - REACT_BOT_MESSAGE / LOG / MCP_SYNC: null (返信にペイロードなし)
  * - OPEN_VIEW: string (HTMLコンテンツ)
  */
 export type ExecuteWebhookResponse<
   A extends ExecuteWebhookAction = ExecuteWebhookAction
 > = A extends "MENTION" | "THREAD" | "GUEST_USER_CHAT"
   ? MessageBody
-  : A extends "REACT_BOT_MESSAGE"
-  ? null
-  : A extends "MCP_SYNC"
+  : A extends "REACT_BOT_MESSAGE" | "LOG" | "MCP_SYNC"
   ? null
   : A extends "OPEN_VIEW"
   ? string
