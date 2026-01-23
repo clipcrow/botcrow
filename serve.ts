@@ -64,40 +64,33 @@ router.post("/", async (ctx) => {
 
           /**
            * Recursively cleans the JSON schema to meet Gemini API's strict serving constraints.
-           * Removes unsupported fields, combinators, and excessive metadata.
+           * Removes unsupported fields and standardizes types.
            */
           // deno-lint-ignore no-explicit-any
           const cleanGeminiSchema = (schema: any) => {
               if (!schema || typeof schema !== "object") return;
               
-              // Delete unsupported fields and complex constraints
+              // Standard unsupported fields in Gemini Function Calling
               const unsafeFields = [
-                  'uniqueItems', 'format', 'pattern', 
+                  'default', 'examples', 'title',
                   'minLength', 'maxLength', 
-                  'minimum', 'maximum', 
-                  'exclusiveMinimum', 'exclusiveMaximum',
-                  'multipleOf',
-                  'title', 'default', 'examples',
-                  'allOf', 'anyOf', 'oneOf' 
+                  'pattern', 'format',
+                  'oneOf', 'anyOf', 'allOf' // Simplified assumption: Server no longer sends these
               ];
+
               for (const field of unsafeFields) {
                   if (Object.prototype.hasOwnProperty.call(schema, field)) {
                       delete schema[field];
                   }
               }
-              
-              // Remove property descriptions entirely to reduce state count
-              if (schema.description && typeof schema.description === 'string') {
-                   delete schema.description;
+
+              // Description is allowed in standard Gemini tools, but if we want to be safe or strict:
+              // For now, we keep it but ensure it's a string.
+              if (schema.description && typeof schema.description !== 'string') {
+                  delete schema.description;
               }
               
-              // Fix Enums: ensure they are strings
-              if (schema.enum && Array.isArray(schema.enum)) {
-                  schema.enum = schema.enum.map(String);
-                  schema.type = "string"; 
-              }
-              
-              // Recursion for properties, items, definitions
+              // Recursively clean properties
               if (schema.properties) {
                    for (const key in schema.properties) {
                        cleanGeminiSchema(schema.properties[key]);
@@ -105,29 +98,11 @@ router.post("/", async (ctx) => {
               }
               if (schema.items) {
                   if (Array.isArray(schema.items)) {
-                      if (schema.items.length > 0) {
-                          const firstItem = schema.items[0];
-                          cleanGeminiSchema(firstItem);
-                          schema.items = firstItem; 
-                      } else {
-                          delete schema.items; 
-                      }
+                      // deno-lint-ignore no-explicit-any
+                      schema.items.forEach((item: any) => cleanGeminiSchema(item));
                   } else {
                       cleanGeminiSchema(schema.items);
                   }
-              }
-              if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
-                  cleanGeminiSchema(schema.additionalProperties);
-              }
-              if (schema.definitions) {
-                  for (const key in schema.definitions) {
-                      cleanGeminiSchema(schema.definitions[key]);
-                  }
-              }
-              if (schema.$defs) {
-                   for (const key in schema.$defs) {
-                      cleanGeminiSchema(schema.$defs[key]);
-                   }
               }
           };
 
@@ -157,13 +132,7 @@ router.post("/", async (ctx) => {
           parts: [{
               text: `MCP設定同期ボタンがクリックされました。
               利用可能なツール（例: Send_message など）を使用して、以下のチャットに「同期が完了しました」というメッセージを送信してください。
-              
-              ターゲットID (target_id): ${req.bot.id}
-              ターゲットタイプ (target_type): external_links
-              シリアル番号: ${req.bot.serial_no}
-              
-              ※ target_id が分かる場合は必ず target_id を使用してください。
-              ※ このBotはシステム上 external_links として扱われます。`,
+              ターゲット (シリアル番号): ${req.bot.serial_no}`,
           }],
         },
       ];
@@ -250,7 +219,7 @@ router.post("/", async (ctx) => {
     " and try to keep the conversation going with your users.";
   let result;
 
-  if (req.history && req.history.length > 0) {
+  if ("history" in req && req.history && req.history.length > 0) {
     const history = req.history.map((h) => ({
       role: h.actor.type === "BOT" ? "model" : "user",
       parts: [{ text: h.text }],
