@@ -1,2 +1,3 @@
 .DS_Store
 .env
+.mcp-credentials.json

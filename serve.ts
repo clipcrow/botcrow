@@ -49,8 +49,6 @@ router.post("/", async (ctx) => {
       const geminiTools = tools.map((tool: any) => {
           // Optimization: Only provide full schema for "Send_message" and "Get_*" tools.
           // For other tools, provide a generic object schema to reduce total schema state size.
-          console.log(tool.name);
-
           const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
           if (!isCriticalTool) {
@@ -188,6 +186,17 @@ router.post("/", async (ctx) => {
       // SDK connection cleanup if necessary
     }
 
+    try {
+      // Save credentials for debugging
+      await Deno.writeTextFile(
+        ".mcp-credentials.json",
+        JSON.stringify({ endpoint: req.bot.mcp.endpoint, token: req.bot.mcp.token })
+      );
+      console.log("[Info] Saved MCP credentials to .mcp-credentials.json");
+    } catch (e) {
+      console.error("[Error] Failed to save credentials:", e);
+    }
+
     ctx.response.status = 200;
     return;
   }
@@ -206,6 +215,7 @@ router.post("/", async (ctx) => {
     return;
   }
 
+  // Debug Endpoint for MCP Tools
   if (req.action === "OPEN_VIEW") {
     ctx.response.status = 400;
     return;
@@ -244,6 +254,68 @@ router.post("/", async (ctx) => {
     ctx.response.body = { text };
   } else {
     ctx.response.status = 200;
+  }
+});
+
+router.get("/mcp-debug", async (ctx) => {
+  try {
+    const creds = JSON.parse(await Deno.readTextFile(".mcp-credentials.json"));
+    if (!creds.endpoint || !creds.token) throw new Error("Invalid credentials");
+
+    const endpoint = creds.endpoint;
+    const token = creds.token;
+
+    const transport = new StreamableHTTPClientTransport(new URL(endpoint), {
+      requestInit: {
+        headers: { "Authorization": `Bearer ${token}` },
+      },
+    });
+
+    const client = new Client(
+      { name: "botcrow-debugger", version: "1.0.0" },
+      { capabilities: {} },
+    );
+
+    await client.connect(transport);
+    const result = await client.listTools();
+    const tools = result.tools;
+
+    if (ctx.request.url.searchParams.get("format") === "json") {
+      ctx.response.headers.set("Content-Type", "application/json");
+      ctx.response.headers.set("Content-Disposition", 'attachment; filename="mcp_tools.json"');
+      ctx.response.body = JSON.stringify(tools, null, 2);
+      return;
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>MCP Tools Debugger</title>
+        <style>
+          body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+          pre { background: white; padding: 15px; border-radius: 5px; overflow-x: auto; border: 1px solid #ccc; }
+          .btn { background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+          .btn:hover { background: #0056b3; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>MCP Tools Definition</h1>
+          <a href="?format=json" class="btn">Download JSON</a>
+        </div>
+        <pre>${JSON.stringify(tools, null, 2)}</pre>
+      </body>
+      </html>
+    `;
+    
+    ctx.response.headers.set("Content-Type", "text/html");
+    ctx.response.body = html;
+
+  } catch (e) {
+    ctx.response.status = 500;
+    ctx.response.body = `Error: ${e instanceof Error ? e.message : String(e)}. Please click 'MCP Sync' first.`;
   }
 });
 
