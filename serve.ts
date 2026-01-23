@@ -49,6 +49,7 @@ router.post("/", async (ctx) => {
       const geminiTools = tools.map((tool: any) => {
           // Optimization: Only provide full schema for "Send_message" and "Get_*" tools.
           // For other tools, provide a generic object schema to reduce total schema state size.
+          console.log(tool.name);
 /*
           const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
@@ -59,7 +60,7 @@ router.post("/", async (ctx) => {
                    parameters: { type: "object" }
                };
           }
-
+*/        
           // Deep clone the input schema to avoid mutating the original
           const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
           // deno-lint-ignore no-explicit-any
@@ -112,12 +113,12 @@ router.post("/", async (ctx) => {
               description = description.substring(0, 147) + "...";
           }
           description = description.replace(/\s+/g, ' ').trim();
-*/
+
           return {
               name: tool.name,
               description: tool.description,
               // deno-lint-ignore no-explicit-any
-              parameters: tool.inputSchema as any
+              parameters: inputSchema as any
           };
       });
 
