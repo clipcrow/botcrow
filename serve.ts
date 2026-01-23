@@ -49,6 +49,7 @@ router.post("/", async (ctx) => {
       const geminiTools = tools.map((tool: any) => {
           // Optimization: Only provide full schema for "Send_message" and "Get_*" tools.
           // For other tools, provide a generic object schema to reduce total schema state size.
+/*
           const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
           if (!isCriticalTool) {
@@ -61,11 +62,6 @@ router.post("/", async (ctx) => {
 
           // Deep clone the input schema to avoid mutating the original
           const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
-
-          /**
-           * Recursively cleans the JSON schema to meet Gemini API's strict serving constraints.
-           * Removes unsupported fields and standardizes types.
-           */
           // deno-lint-ignore no-explicit-any
           const cleanGeminiSchema = (schema: any) => {
               if (!schema || typeof schema !== "object") return;
@@ -80,6 +76,7 @@ router.post("/", async (ctx) => {
 
               for (const field of unsafeFields) {
                   if (Object.prototype.hasOwnProperty.call(schema, field)) {
+                      console.log(`Deleting unsafe field: ${tool.name} ${field}`);
                       delete schema[field];
                   }
               }
@@ -115,12 +112,12 @@ router.post("/", async (ctx) => {
               description = description.substring(0, 147) + "...";
           }
           description = description.replace(/\s+/g, ' ').trim();
-
+*/
           return {
               name: tool.name,
-              description: description,
+              description: tool.description,
               // deno-lint-ignore no-explicit-any
-              parameters: inputSchema as any
+              parameters: tool.inputSchema as any
           };
       });
 
