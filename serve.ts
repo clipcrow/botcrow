@@ -9,6 +9,17 @@ await load({ export: true });
 const ai = new GoogleGenAI({ apiKey: Deno.env.get("GEMINI_API_KEY") });
 const signature = Deno.env.get("X_CLIPCROW_SIGNATURE") || null;
 
+// In-memory storage for Deno Deploy support
+let mcpCredentials: { endpoint: string; token: string } | null = null;
+
+// Try to load raw credentials from file on startup (for local dev persistence)
+try {
+  const text = await Deno.readTextFile(".mcp-credentials.json");
+  mcpCredentials = JSON.parse(text);
+} catch {
+  // Ignore missing file or permission errors
+}
+
 const router = new Router();
 router.post("/", async (ctx) => {
   if (signature !== ctx.request.headers.get("X-ClipCrow-Signature")) {
@@ -186,15 +197,18 @@ router.post("/", async (ctx) => {
       // SDK connection cleanup if necessary
     }
 
+    // Update in-memory credentials using the request data directly
+    mcpCredentials = { endpoint: req.bot.mcp.endpoint, token: req.bot.mcp.token };
+    
+    // Try to save to file for local persistence (ignore errors on Deploy)
     try {
-      // Save credentials for debugging
       await Deno.writeTextFile(
         ".mcp-credentials.json",
-        JSON.stringify({ endpoint: req.bot.mcp.endpoint, token: req.bot.mcp.token })
+        JSON.stringify(mcpCredentials)
       );
       console.log("[Info] Saved MCP credentials to .mcp-credentials.json");
     } catch (e) {
-      console.error("[Error] Failed to save credentials:", e);
+      console.warn("[Warn] Failed to save persistence file (expected on Deno Deploy):", e);
     }
 
     ctx.response.status = 200;
@@ -259,11 +273,20 @@ router.post("/", async (ctx) => {
 
 router.get("/mcp-debug", async (ctx) => {
   try {
-    const creds = JSON.parse(await Deno.readTextFile(".mcp-credentials.json"));
-    if (!creds.endpoint || !creds.token) throw new Error("Invalid credentials");
+    // Rely on in-memory credentials directly
+    if (!mcpCredentials || !mcpCredentials.endpoint || !mcpCredentials.token) {
+       // Attempt reload from file if memory is empty (e.g. fresh start local)
+       try {
+          const text = await Deno.readTextFile(".mcp-credentials.json");
+          mcpCredentials = JSON.parse(text);
+       } catch {
+          throw new Error("No credentials found. Please click 'MCP Sync' button first.");
+       }
+    }
+    
+    if (!mcpCredentials) throw new Error("Invalid credentials state.");
 
-    const endpoint = creds.endpoint;
-    const token = creds.token;
+    const { endpoint, token } = mcpCredentials;
 
     const transport = new StreamableHTTPClientTransport(new URL(endpoint), {
       requestInit: {
