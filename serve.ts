@@ -50,7 +50,7 @@ router.post("/", async (ctx) => {
           // Optimization: Only provide full schema for "Send_message" and "Get_*" tools.
           // For other tools, provide a generic object schema to reduce total schema state size.
           console.log(tool.name);
-/*
+
           const isCriticalTool = tool.name === "Send_message" || tool.name.startsWith("Get_");
 
           if (!isCriticalTool) {
@@ -60,7 +60,7 @@ router.post("/", async (ctx) => {
                    parameters: { type: "object" }
                };
           }
-*/        
+        
           // Deep clone the input schema to avoid mutating the original
           const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema));
           // deno-lint-ignore no-explicit-any
