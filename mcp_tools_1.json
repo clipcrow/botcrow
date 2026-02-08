@@ -107,7 +107,7 @@
           "enum": [
             "CREATED_AT",
             "UPDATED_AT",
-            "TITLE"
+            "NAME"
           ],
           "description": "Default is CREATED_AT"
         },
