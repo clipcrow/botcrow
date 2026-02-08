@@ -1,0 +1,777 @@
+[
+  {
+    "name": "Send_message",
+    "description": "Send a message to the target's chat",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "message": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "target",
+        "message"
+      ]
+    }
+  },
+  {
+    "name": "Add_reaction",
+    "description": "Add a reaction to the message. If the reaction is already added, it will be ignored.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "reaction": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "reaction"
+      ]
+    }
+  },
+  {
+    "name": "List_messages",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "UUID or Serial Number of the card containing the chat you want to search"
+        },
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by message content"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_message",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  {
+    "name": "List_bot_accounts",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "TITLE"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_bot_account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_bot_account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this bot account."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  {
+    "name": "List_member_accounts",
+    "description": "List members",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "NAME"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_member_account",
+    "description": "Get member",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_member_account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this member account."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  {
+    "name": "List_guest_accounts",
+    "description": "List guests",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "NAME"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_guest_account",
+    "description": "Get guest",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_guest_account",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this member account."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  {
+    "name": "List_tags",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "TITLE"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_tag",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_tag",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this tag."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  
+  {
+    "name": "List_templates",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "TITLE"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_template",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_template",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this template."
+        },
+        "report_items": {
+          "items": {
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update report items of this template."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+
+
+
+  {
+    "name": "Create_record",
+    "description": "Create record",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "folder": {
+          "type": "string",
+          "enum": [
+            "チャット",
+            "病棟施設",
+            "患者"
+          ],
+          "description": "Card Folder/Database name"
+        },
+        "template": {
+          "type": "string",
+          "description": "Template ID or Serial Number. If 'folder' is set, this parameter is ignored."
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can set information items of this record."
+        },
+        "report_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can set report items of this record."
+        }
+      },
+      "required": [
+        "title"
+      ]
+    }
+  },
+  {
+    "name": "List_records",
+    "description": "List records",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "folder": {
+          "type": "string",
+          "enum": [
+            "チャット",
+            "病棟施設",
+            "患者"
+          ],
+          "description": "Card Folder/Database name"
+        },
+        "template": {
+          "type": "string",
+          "description": "Template ID or Serial Number. If 'folder' is set, this parameter is ignored."
+        },
+        "page_size": {
+          "type": "integer",
+          "description": "If omitted, the page size is 20"
+        },
+        "page": {
+          "type": "integer",
+          "description": "If omitted, the page is 1"
+        },
+        "like": {
+          "type": "string",
+          "description": "Filter by partial match by title or description"
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "CREATED_AT",
+            "UPDATED_AT",
+            "TITLE"
+          ],
+          "description": "Default is CREATED_AT"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "DESC",
+            "ASC"
+          ],
+          "description": "Default is DESC"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "Get_record",
+    "description": "Get record",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  },
+  {
+    "name": "Update_record",
+    "description": "Update record",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target UUID or Serial Number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "info_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update information items of this record."
+        },
+        "report_items": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "type": "array",
+          "description": "You can update report items of this record."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  }
+]

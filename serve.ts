@@ -229,12 +229,6 @@ router.post("/", async (ctx) => {
     return;
   }
 
-  // Debug Endpoint for MCP Tools
-  if (req.action === "OPEN_VIEW") {
-    ctx.response.status = 400;
-    return;
-  }
-
   const model = "gemini-2.5-flash";
   const systemInstruction =
     "Be clear and short, don't try to answer everything at once," +

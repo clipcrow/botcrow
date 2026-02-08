@@ -1,0 +1,3588 @@
+[
+  {
+    "name": "Send_message",
+    "description": "Send message\n\n\n**Path Parameters:**\n\n- **workspace_id**: WorkspaceID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • message (REQUIRED): String\n  • target_id (REQUIRED): String\n  • target_type (REQUIRED): String Have Serial No→Get_Serial_Number_Info→Send_message. Do not have Serial No→ask Serial No. ONLY ask Serial No.Mention: <@member>, <%tag>, <#bot>.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • message (REQUIRED): String\n  • target_id (REQUIRED): String\n  • target_type (REQUIRED): String Have Serial No→Get_Serial_Number_Info→Send_message. Do not have Serial No→ask Serial No. ONLY ask Serial No.Mention: <@member>, <%tag>, <#bot>.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • message (REQUIRED): String\n  • target_id (REQUIRED): String\n  • target_type (REQUIRED): String Have Serial No→Get_Serial_Number_Info→Send_message. Do not have Serial No→ask Serial No. ONLY ask Serial No.Mention: <@member>, <%tag>, <#bot>.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • message (REQUIRED): String\n  • target_id (REQUIRED): String\n  • target_type (REQUIRED): String Have Serial No→Get_Serial_Number_Info→Send_message. Do not have Serial No→ask Serial No. ONLY ask Serial No.Mention: <@member>, <%tag>, <#bot>.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "form_item_data": {
+          "type": "string",
+          "description": "JSON string for form_item_data"
+        },
+        "group_id": {
+          "type": "string"
+        },
+        "is_private": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "message_id": {
+          "type": "string"
+        },
+        "message_type": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "string",
+          "description": "JSON string for metadata"
+        },
+        "target_id": {
+          "type": "string"
+        },
+        "target_type": {
+          "type": "string",
+          "enum": [
+            "records",
+            "workspaces",
+            "external_links",
+            "templates",
+            "tag_groups",
+            "members",
+            "databases",
+            "chats",
+            "seats",
+            "navigations",
+            "profile_items",
+            "guest_service",
+            "zombie_resources"
+          ]
+        },
+        "webhook_metadata": {
+          "type": "string",
+          "description": "JSON string for webhook_metadata"
+        }
+      },
+      "required": [
+        "message",
+        "target_id",
+        "target_type"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "chats"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_external_links",
+    "description": "List external links\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page_size: Records per page (default 10, max 1000)\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • status_tags: Member status: ACTIVE, INVITING, SUSPENDED\n  • only_unread: true=only unread messages\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • page: Page number (1-indexed)\n  • query: Search text (case-insensitive)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page_size: Records per page (default 10, max 1000)\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • status_tags: Member status: ACTIVE, INVITING, SUSPENDED\n  • only_unread: true=only unread messages\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • page: Page number (1-indexed)\n  • query: Search text (case-insensitive)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page_size: Records per page (default 10, max 1000)\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • status_tags: Member status: ACTIVE, INVITING, SUSPENDED\n  • only_unread: true=only unread messages\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • page: Page number (1-indexed)\n  • query: Search text (case-insensitive)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page_size: Records per page (default 10, max 1000)\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • status_tags: Member status: ACTIVE, INVITING, SUSPENDED\n  • only_unread: true=only unread messages\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • page: Page number (1-indexed)\n  • query: Search text (case-insensitive)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "facilitator": {
+          "type": "string",
+          "enum": [
+            "FACILITATION",
+            "UNEDITABLE"
+          ],
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "special_sort": {
+          "type": "string",
+          "enum": [
+            "TAG_NUMBER",
+            "TITLE",
+            "LOG_CHAT"
+          ],
+          "description": "TAG_NUMBER, TITLE, or LOG_CHAT"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by multiple tags. Example: ['uuid1', 'uuid2']\"`"
+        },
+        "status_tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "trigger_type": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "true=only unread messages"
+        },
+        "sort": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "query": {
+          "type": "string"
+        },
+        "type_tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "scope_tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "bookmark": {
+          "type": "boolean",
+          "description": "Filter: BOOKMARK_ON, BOOKMARK_OFF"
+        },
+        "webhook_tags": {
+          "type": "boolean"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Create_external_link",
+    "description": "Create external link\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "ai_api_key": {
+          "type": "string"
+        },
+        "ai_mcp_config": {
+          "type": "string"
+        },
+        "ai_model": {
+          "type": "string",
+          "enum": [
+            "gemini-3-pro-preview",
+            "gemini-3-flash-preview",
+            "gemini-2.5-pro",
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite"
+          ]
+        },
+        "ai_prompt": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "external_link_creator_id": {
+          "type": "string"
+        },
+        "facilitator": {
+          "properties": {
+            "bot_account_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object",
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "form_items": {
+          "items": {
+            "properties": {
+              "cloned_from": {
+                "type": "string"
+              },
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "o_auth_enabled": {
+          "type": "boolean",
+          "description": "ExpiredAt         null.Time           `json:\"expired_at,omitempty\" swaggertype:\"string\" validate:\"required\"`"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "scopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "share_scope": {
+          "properties": {
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object"
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "trigger_card_operation": {
+          "type": "boolean"
+        },
+        "trigger_cron": {
+          "type": "boolean"
+        },
+        "trigger_mention": {
+          "type": "boolean"
+        },
+        "trigger_webhook_incoming": {
+          "type": "boolean"
+        },
+        "webhook": {
+          "properties": {
+            "hmac_key": {
+              "type": "string"
+            },
+            "secret": {
+              "type": "string"
+            },
+            "webhook_url": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "webhook_enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "facilitator",
+        "name"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_external_link_by_serial_number",
+    "description": "Get external link by serial number\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_external_link_by_ID",
+    "description": "Get external link by ID\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **external_link_id**: External Link ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "external_link_id": {
+          "type": "string",
+          "description": "Bot/External Link UUID"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "external_link_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Put_external_link",
+    "description": "Put external link\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **external_link_id**: External Link ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n  • name (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n  • name (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "external_link_id": {
+          "type": "string",
+          "description": "Bot/External Link UUID"
+        },
+        "ai_api_key": {
+          "type": "string"
+        },
+        "ai_mcp_config": {
+          "type": "string"
+        },
+        "ai_model": {
+          "type": "string",
+          "enum": [
+            "gemini-3-pro-preview",
+            "gemini-3-flash-preview",
+            "gemini-2.5-pro",
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite"
+          ]
+        },
+        "ai_prompt": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "o_auth_enabled": {
+          "type": "boolean",
+          "description": "ExpiredAt         null.Time           `json:\"expired_at,omitempty\" swaggertype:\"string\" validate:\"required\"`"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "scopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "trigger_card_operation": {
+          "type": "boolean"
+        },
+        "trigger_cron": {
+          "type": "boolean"
+        },
+        "trigger_mention": {
+          "type": "boolean"
+        },
+        "trigger_webhook_incoming": {
+          "type": "boolean"
+        },
+        "webhook": {
+          "properties": {
+            "hmac_key": {
+              "type": "string"
+            },
+            "secret": {
+              "type": "string"
+            },
+            "webhook_url": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "webhook_enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "external_link_id",
+        "name"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Delete_external_link",
+    "description": "Delete external link\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **external_link_id**: ExternalLink ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • external_link_id (REQUIRED): Bot/External Link UUID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "external_link_id": {
+          "type": "string",
+          "description": "Bot/External Link UUID"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "external_link_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "external-links"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Invite_member",
+    "description": "Invite member\n\n\n**Path Parameters:**\n\n- **workspace_id**: WorkspaceID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • name (REQUIRED): String\n  • role (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • name (REQUIRED): String\n  • role (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • name (REQUIRED): String\n  • role (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • name (REQUIRED): String\n  • role (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "facilitator": {
+          "properties": {
+            "bot_account_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object",
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "MANAGER",
+            "STAFF",
+            "GUEST"
+          ]
+        },
+        "share_scope": {
+          "properties": {
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object"
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "name",
+        "role"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_accessible_targets_for_the_requester",
+    "description": "Get accessible targets for the requester\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_members",
+    "description": "List members\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • for_guest_page: Set to true when querying for guest page view\"`\n  • ignore_current_user: Set to true to exclude the current user from results\"`\n  • join_date: Filter by date range using from_date and to_date (format: RFC3339)\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • query: Search text (case-insensitive)\n  • role_tags: Filter by member roles: MANAGER (admin), STAFF (regular member), PARTNER (ext...\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status_tags: Filter by member status: ACTIVE (active member), INVITING (pending invitation...\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • for_guest_page: Set to true when querying for guest page view\"`\n  • ignore_current_user: Set to true to exclude the current user from results\"`\n  • join_date: Filter by date range using from_date and to_date (format: RFC3339)\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • query: Search text (case-insensitive)\n  • role_tags: Filter by member roles: MANAGER (admin), STAFF (regular member), PARTNER (ext...\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status_tags: Filter by member status: ACTIVE (active member), INVITING (pending invitation...\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • for_guest_page: Set to true when querying for guest page view\"`\n  • ignore_current_user: Set to true to exclude the current user from results\"`\n  • join_date: Filter by date range using from_date and to_date (format: RFC3339)\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • query: Search text (case-insensitive)\n  • role_tags: Filter by member roles: MANAGER (admin), STAFF (regular member), PARTNER (ext...\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status_tags: Filter by member status: ACTIVE (active member), INVITING (pending invitation...\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • for_guest_page: Set to true when querying for guest page view\"`\n  • ignore_current_user: Set to true to exclude the current user from results\"`\n  • join_date: Filter by date range using from_date and to_date (format: RFC3339)\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • query: Search text (case-insensitive)\n  • role_tags: Filter by member roles: MANAGER (admin), STAFF (regular member), PARTNER (ext...\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status_tags: Filter by member status: ACTIVE (active member), INVITING (pending invitation...\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "bookmark": {
+          "type": "boolean",
+          "description": "Filter: BOOKMARK_ON, BOOKMARK_OFF"
+        },
+        "filtering_checkbox": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for checkbox form fields\"`"
+        },
+        "filtering_date": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for date form fields\"`"
+        },
+        "filtering_dropdown": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for dropdown form fields\"`"
+        },
+        "filtering_number": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for number form fields\"`"
+        },
+        "filtering_radio_button": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for radio button form fields\"`"
+        },
+        "filtering_text": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for text form fields\"`"
+        },
+        "filtering_text_area": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for text area form fields\"`"
+        },
+        "filtering_time": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for time form fields\"`"
+        },
+        "for_guest_page": {
+          "type": "boolean",
+          "description": "Set to true when querying for guest page view\"`"
+        },
+        "ignore_current_user": {
+          "type": "boolean",
+          "description": "Set to true to exclude the current user from results\"`"
+        },
+        "join_date": {
+          "properties": {
+            "from_date": {
+              "type": "string",
+              "description": "Start date filter (RFC3339)"
+            },
+            "to_date": {
+              "type": "string",
+              "description": "End date filter (RFC3339)"
+            }
+          },
+          "type": "object",
+          "description": "Filter by date range using from_date and to_date (format: RFC3339)"
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "true=only unread messages"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "query": {
+          "type": "string"
+        },
+        "role_tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by member roles: MANAGER (admin), STAFF (regular member), PARTNER (external collaborator), GUEST (limited access)\"`"
+        },
+        "sort": {
+          "type": "string"
+        },
+        "special_sort": {
+          "type": "string",
+          "enum": [
+            "TAG_NUMBER",
+            "TITLE",
+            "LOG_CHAT"
+          ],
+          "description": "TAG_NUMBER, TITLE, or LOG_CHAT"
+        },
+        "status_tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by member status: ACTIVE (active member), INVITING (pending invitation), SUSPENDED (deactivated)\"`"
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by multiple tags. Example: ['uuid1', 'uuid2']\"`"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_member_by_serial_number",
+    "description": "Get member by serial number\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_member_by_ID",
+    "description": "Get member by ID\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **member_id**: Member ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "member_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Delete_member",
+    "description": "Delete member\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **member_id**: Member ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "member_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Patch_member",
+    "description": "Patch member\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **member_id**: Member ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • member_id (REQUIRED): String\nCommon optional filters:\n  • tag_ids: Filter by tag UUIDs (array)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "_delete_optional_form_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "background_text": {
+          "type": "string"
+        },
+        "do_change_icon": {
+          "type": "boolean"
+        },
+        "email": {
+          "type": "string"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "member_form_items": {
+          "items": {
+            "properties": {
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "name": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "optional_form_items": {
+          "items": {
+            "properties": {
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position": {
+                "type": "number"
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "patch_facilitator": {
+          "properties": {
+            "patch_facilitator_external_link": {
+              "properties": {
+                "bot_account_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "patch_share_scope": {
+          "properties": {
+            "patch_share_scope_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_share_scope_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "MANAGER",
+            "STAFF",
+            "PARTNER"
+          ]
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        }
+      },
+      "required": [
+        "member_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "members"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Create_record",
+    "description": "Create record\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • template_id: Template UUID filter Card=Record. Needs database_id (card folder). Ask user for folder if not provided.Have database_id→Always set origin_id=database_id & origin_type='databases'. Ask user for facilitator if not provided\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • template_id: Template UUID filter Card=Record. Needs database_id (card folder). Ask user for folder if not provided.Have database_id→Always set origin_id=database_id & origin_type='databases'. Ask user for facilitator if not provided\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • template_id: Template UUID filter Card=Record. Needs database_id (card folder). Ask user for folder if not provided.Have database_id→Always set origin_id=database_id & origin_type='databases'. Ask user for facilitator if not provided\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • name (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • template_id: Template UUID filter Card=Record. Needs database_id (card folder). Ask user for folder if not provided.Have database_id→Always set origin_id=database_id & origin_type='databases'. Ask user for facilitator if not provided",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "due_date": {
+          "type": "string"
+        },
+        "estimated_time": {
+          "type": "integer",
+          "enum": [
+            5,
+            10,
+            15,
+            20,
+            30,
+            45,
+            60,
+            120,
+            180,
+            240,
+            480
+          ]
+        },
+        "external_link_creator_id": {
+          "type": "string"
+        },
+        "facilitator": {
+          "properties": {
+            "bot_account_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object",
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "manage_progress_as_task": {
+          "type": "boolean",
+          "description": "true=task-type records only"
+        },
+        "manage_status_individually": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "origin_id": {
+          "type": "string"
+        },
+        "origin_type": {
+          "type": "string"
+        },
+        "pic_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "share_scope": {
+          "properties": {
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "timing_enabled": {
+          "type": "boolean"
+        },
+        "updateable_form_items": {
+          "items": {
+            "properties": {
+              "cloned_from": {
+                "type": "string"
+              },
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "facilitator",
+        "name"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_records",
+    "description": "List records\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • database_id (REQUIRED): Card Folder/Database UUID for filtering records\nCommon optional filters:\n  • assignee_id: Filter by assignee UUID\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • creator_id: Filter by creator UUID\n  • due_date: Filter records by specific due date (format: RFC3339)\"`\n  • from_date: Start date filter (RFC3339)\n  • is_archive: true=archived only, false=active only\n  • manage_progress_as_task: true=task-type records only\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • query: Search text (case-insensitive)\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • database_id (REQUIRED): Card Folder/Database UUID for filtering records\nCommon optional filters:\n  • assignee_id: Filter by assignee UUID\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • creator_id: Filter by creator UUID\n  • due_date: Filter records by specific due date (format: RFC3339)\"`\n  • from_date: Start date filter (RFC3339)\n  • is_archive: true=archived only, false=active only\n  • manage_progress_as_task: true=task-type records only\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • query: Search text (case-insensitive)\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • database_id (REQUIRED): Card Folder/Database UUID for filtering records\nCommon optional filters:\n  • assignee_id: Filter by assignee UUID\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • creator_id: Filter by creator UUID\n  • due_date: Filter records by specific due date (format: RFC3339)\"`\n  • from_date: Start date filter (RFC3339)\n  • is_archive: true=archived only, false=active only\n  • manage_progress_as_task: true=task-type records only\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • query: Search text (case-insensitive)\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • database_id (REQUIRED): Card Folder/Database UUID for filtering records\nCommon optional filters:\n  • assignee_id: Filter by assignee UUID\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • creator_id: Filter by creator UUID\n  • due_date: Filter records by specific due date (format: RFC3339)\"`\n  • from_date: Start date filter (RFC3339)\n  • is_archive: true=archived only, false=active only\n  • manage_progress_as_task: true=task-type records only\n  • only_unread: true=only unread messages\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • query: Search text (case-insensitive)\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "add_filtering_checkbox_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for checkbox form fields\"`"
+        },
+        "add_filtering_date_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for date form fields\"`"
+        },
+        "add_filtering_dropdown_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for dropdown form fields\"`"
+        },
+        "add_filtering_number_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for number form fields\"`"
+        },
+        "add_filtering_radio_button_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for radio button form fields\"`"
+        },
+        "add_filtering_text_area_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for text area form fields\"`"
+        },
+        "add_filtering_text_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for text form fields\"`"
+        },
+        "add_filtering_time_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Advanced filtering for time form fields\"`"
+        },
+        "assignee_id": {
+          "type": "string",
+          "description": "Filter by assignee UUID"
+        },
+        "bookmark": {
+          "type": "string",
+          "enum": [
+            "BOOKMARK_ON",
+            "BOOKMARK_OFF"
+          ],
+          "description": "Filter: BOOKMARK_ON, BOOKMARK_OFF"
+        },
+        "creator_id": {
+          "type": "string",
+          "description": "Filter by creator UUID"
+        },
+        "database_id": {
+          "type": "string",
+          "description": "Card Folder/Database UUID for filtering records"
+        },
+        "due_date": {
+          "type": "string",
+          "description": "Filter records by specific due date (format: RFC3339)\"`"
+        },
+        "due_dates": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by multiple specific due dates\"`"
+        },
+        "facilitator": {
+          "type": "string",
+          "enum": [
+            "FACILITATION",
+            "UNEDITABLE"
+          ],
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "from_date": {
+          "type": "string",
+          "description": "Start date filter (RFC3339)"
+        },
+        "is_archive": {
+          "type": "boolean",
+          "description": "true=archived only, false=active only"
+        },
+        "is_card_query_page": {
+          "type": "boolean",
+          "description": "Set to true when querying from card query page\"`"
+        },
+        "is_skip_get_response": {
+          "type": "boolean",
+          "description": "Set to true to skip fetching full record details (returns IDs only)\"`"
+        },
+        "is_without_template": {
+          "type": "boolean",
+          "description": "Filter records without template: true=only records without template\"`"
+        },
+        "manage_progress_as_task": {
+          "type": "boolean",
+          "description": "true=task-type records only"
+        },
+        "measure_times": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by estimated time ranges, e.g. ['5-10', '10-20'] for 5-10 minutes or 10-20 minutes\"`"
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "true=only unread messages"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "pic": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Person In Charge: SELF, OTHER_MEMBER, OPEN"
+        },
+        "query": {
+          "type": "string"
+        },
+        "re_filtering_checkbox_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for checkbox form fields\"`"
+        },
+        "re_filtering_date_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for date form fields\"`"
+        },
+        "re_filtering_dropdown_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for dropdown form fields\"`"
+        },
+        "re_filtering_number_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "max": {
+                "type": "number"
+              },
+              "min": {
+                "type": "number"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for number form fields\"`"
+        },
+        "re_filtering_radio_button_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": false
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for radio button form fields\"`"
+        },
+        "re_filtering_text_area_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for text area form fields\"`"
+        },
+        "re_filtering_text_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for text form fields\"`"
+        },
+        "re_filtering_time_req": {
+          "items": {
+            "properties": {
+              "form_item_id": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "required": [
+              "form_item_id"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Re-filtering for time form fields\"`"
+        },
+        "req_origin_type": {
+          "type": "string",
+          "description": "Filter by origin type (internal use)\"`"
+        },
+        "sort": {
+          "type": "string"
+        },
+        "special_sort": {
+          "type": "string",
+          "enum": [
+            "TAG_NUMBER",
+            "TITLE",
+            "LOG_CHAT"
+          ],
+          "description": "TAG_NUMBER, TITLE, or LOG_CHAT"
+        },
+        "status": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by multiple tags. Example: ['uuid1', 'uuid2']\"`"
+        },
+        "template_id": {
+          "type": "string"
+        },
+        "to_date": {
+          "type": "string",
+          "description": "End date filter (RFC3339)"
+        }
+      },
+      "required": [
+        "database_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_record_by_serial_number",
+    "description": "Get record by serial number\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_record_by_ID",
+    "description": "Get record by ID\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **record_id**: Record ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "record_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Delete_record",
+    "description": "Delete record\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **record_id**: Record ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "record_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Patch_record",
+    "description": "Patch record\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **record_id**: Record ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\nCommon optional filters:\n  • due_date: Specific due date filter\n  • manage_progress_as_task: true=task-type records only\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "string"
+        },
+        "is_only_update_updateable_form_items": {
+          "type": "boolean"
+        },
+        "delete_additional_form_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "delete_updateable_form_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "description": {
+          "type": "string"
+        },
+        "do_archive": {
+          "type": "boolean"
+        },
+        "due_date": {
+          "type": "string"
+        },
+        "estimated_time": {
+          "type": "integer",
+          "enum": [
+            -1,
+            5,
+            10,
+            15,
+            20,
+            30,
+            45,
+            60,
+            120,
+            180,
+            240,
+            480
+          ]
+        },
+        "external_link_creator_id": {
+          "type": "string"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "is_remove_all_pic": {
+          "type": "boolean"
+        },
+        "manage_progress_as_task": {
+          "type": "boolean",
+          "description": "true=task-type records only"
+        },
+        "manage_status_individually": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "patch_facilitator": {
+          "properties": {
+            "patch_facilitator_external_link": {
+              "properties": {
+                "bot_account_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "patch_share_scope": {
+          "properties": {
+            "patch_share_scope_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_share_scope_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "pic_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "BEFORE_START",
+            "IN_PROGRESS",
+            "PAUSED",
+            "REDO",
+            "COMPLETED"
+          ]
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "timing_enabled": {
+          "type": "boolean"
+        },
+        "updateable_form_items": {
+          "items": {
+            "properties": {
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position": {
+                "type": "number"
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        }
+      },
+      "required": [
+        "record_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Update_record_PIC",
+    "description": "Update record PIC\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **record_id**: Record ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "string"
+        },
+        "is_remove": {
+          "type": "boolean"
+        },
+        "pic_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_record_PIC_detail",
+    "description": "Get record PIC detail\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **record_id**: record ID\n\n- **member_id**: member ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\n  • member_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\n  • member_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\n  • member_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • record_id (REQUIRED): String\n  • member_id (REQUIRED): String Card=Record. Needs database_id (card folder). Ask user for folder if not provided.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "string"
+        },
+        "member_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "record_id",
+        "member_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "records"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_Serial_Number_Info",
+    "description": "Get Serial Number Info\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "serial_numbers"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_tag_groups",
+    "description": "List tag groups\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • query: Search text (case-insensitive)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • only_unread: true=only unread messages\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • query: Search text (case-insensitive)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • only_unread: true=only unread messages\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • query: Search text (case-insensitive)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • only_unread: true=only unread messages\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • query: Search text (case-insensitive)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • only_unread: true=only unread messages\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sort": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "color": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "facilitator": {
+          "type": "string",
+          "enum": [
+            "FACILITATION",
+            "UNEDITABLE"
+          ],
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "bookmark": {
+          "type": "boolean",
+          "description": "Filter: BOOKMARK_ON, BOOKMARK_OFF"
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "true=only unread messages"
+        },
+        "special_sort": {
+          "type": "string",
+          "enum": [
+            "TAG_NUMBER",
+            "TITLE",
+            "LOG_CHAT"
+          ],
+          "description": "TAG_NUMBER, TITLE, or LOG_CHAT"
+        },
+        "usage_type": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "display_type": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "exclude_default": {
+          "type": "boolean"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Create_Tag_Group",
+    "description": "Create Tag Group\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • color (REQUIRED): String\n  • facilitator_role (REQUIRED): Object\n  • name (REQUIRED): String\n  • user_assignable (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • color (REQUIRED): String\n  • facilitator_role (REQUIRED): Object\n  • name (REQUIRED): String\n  • user_assignable (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • color (REQUIRED): String\n  • facilitator_role (REQUIRED): Object\n  • name (REQUIRED): String\n  • user_assignable (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • color (REQUIRED): String\n  • facilitator_role (REQUIRED): Object\n  • name (REQUIRED): String\n  • user_assignable (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "maxLength": 2,
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "display_on_card": {
+          "type": "boolean"
+        },
+        "facilitator_role": {
+          "properties": {
+            "bot_account_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object"
+        },
+        "generated_by_ai": {
+          "type": "boolean"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "information_form_items": {
+          "items": {
+            "properties": {
+              "cloned_from": {
+                "type": "string"
+              },
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "value"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "user_assignable": {
+          "type": "string",
+          "enum": [
+            "MULTIPLE",
+            "SINGLE",
+            "DONT_ALLOW"
+          ]
+        }
+      },
+      "required": [
+        "color",
+        "facilitator_role",
+        "name",
+        "user_assignable"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_tag_group_colors",
+    "description": "List tag group colors\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_default_tag_group",
+    "description": "Get default tag group\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_tag_group_by_serial_number",
+    "description": "Get tag group by serial number\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_tag_group_by_ID",
+    "description": "Get tag group by ID\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **tag_group_id**: Tag group ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tag_group_id": {
+          "type": "string",
+          "description": "Tag Group UUID"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "tag_group_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Delete_Tag_Group",
+    "description": "Delete Tag Group\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **tag_group_id**: Tag Group ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tag_group_id": {
+          "type": "string",
+          "description": "Tag Group UUID"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "tag_group_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Patch_Tag_Group",
+    "description": "Patch Tag Group\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **tag_group_id**: Tag Group ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_group_id (REQUIRED): Tag Group UUID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tag_group_id": {
+          "type": "string",
+          "description": "Tag Group UUID"
+        },
+        "color": {
+          "type": "string",
+          "maxLength": 2,
+          "minLength": 1
+        },
+        "delete_information_form_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "delete_tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "description": {
+          "type": "string"
+        },
+        "display_on_card": {
+          "type": "boolean"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "information_form_items": {
+          "items": {
+            "properties": {
+              "data_obj": {
+                "type": "string",
+                "description": "JSON string for data_obj"
+              },
+              "description": {
+                "type": "string"
+              },
+              "display_on_card": {
+                "type": "boolean"
+              },
+              "id": {
+                "type": "string"
+              },
+              "is_lock_settings": {
+                "type": "boolean"
+              },
+              "item_required": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position": {
+                "type": "number"
+              },
+              "props": {
+                "type": "string",
+                "description": "JSON string for props"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "DROPDOWN",
+                  "CHECKBOX",
+                  "RADIO_BUTTON",
+                  "DATETIME",
+                  "LINK",
+                  "NUMBER",
+                  "IMAGE",
+                  "LOCATION",
+                  "CRM",
+                  "MEMBER",
+                  "TEXTAREA",
+                  "DATABASE",
+                  "FILE"
+                ],
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "patch_facilitator": {
+          "properties": {
+            "patch_facilitator_external_link": {
+              "properties": {
+                "bot_account_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "patch_facilitator_role": {
+          "properties": {
+            "valid": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "position": {
+                "type": "number"
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "type": "object",
+            "required": [
+              "value"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "user_assignable": {
+          "type": "string",
+          "enum": [
+            "MULTIPLE",
+            "SINGLE",
+            "DONT_ALLOW"
+          ]
+        }
+      },
+      "required": [
+        "tag_group_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_Tag",
+    "description": "Get Tag\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **tag_id**: Tag ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_id (REQUIRED): Tag ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_id (REQUIRED): Tag ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_id (REQUIRED): Tag ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • tag_id (REQUIRED): Tag ID",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tag_id": {
+          "type": "string",
+          "description": "Tag ID"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "tag_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "tag-groups"
+        ]
+      }
+    }
+  },
+  {
+    "name": "List_templates",
+    "description": "List templates\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • query: Search text (case-insensitive)\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • only_unread: true=only unread messages\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • query: Search text (case-insensitive)\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • only_unread: true=only unread messages\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • query: Search text (case-insensitive)\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • only_unread: true=only unread messages\n📋 REQUEST BODY PARAMETERS:\nCommon optional filters:\n  • status: Task status: COMPLETED, EXPIRED, INCOMPLETE\n  • sort: Sort direction: '-' for descending, '+' for ascending\n  • tag_ids: Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by mul...\n  • query: Search text (case-insensitive)\n  • special_sort: TAG_NUMBER, TITLE, or LOG_CHAT\n  • page: Page number (1-indexed)\n  • page_size: Records per page (default 10, max 1000)\n  • bookmark: Filter: BOOKMARK_ON, BOOKMARK_OFF\n  • pic: Person In Charge: SELF, OTHER_MEMBER, OPEN\n  • only_unread: true=only unread messages",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "number_using": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "COMPLETED",
+            "INCOMPLETE"
+          ]
+        },
+        "request_page": {
+          "type": "string",
+          "enum": [
+            "templates",
+            "folder"
+          ]
+        },
+        "sort": {
+          "type": "string"
+        },
+        "tag_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Filter by tag IDs (UUIDs). Pass multiple comma-separated IDs to filter by multiple tags. Example: ['uuid1', 'uuid2']\"`"
+        },
+        "query": {
+          "type": "string"
+        },
+        "task_enabled": {
+          "type": "boolean"
+        },
+        "special_sort": {
+          "type": "string",
+          "enum": [
+            "TAG_NUMBER",
+            "TITLE",
+            "LOG_CHAT"
+          ],
+          "description": "TAG_NUMBER, TITLE, or LOG_CHAT"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "include_default_template": {
+          "type": "boolean"
+        },
+        "facilitator": {
+          "type": "string",
+          "enum": [
+            "FACILITATION",
+            "UNEDITABLE"
+          ],
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "bookmark": {
+          "type": "boolean",
+          "description": "Filter: BOOKMARK_ON, BOOKMARK_OFF"
+        },
+        "pic": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false,
+          "description": "Person In Charge: SELF, OTHER_MEMBER, OPEN"
+        },
+        "only_unread": {
+          "type": "boolean",
+          "description": "true=only unread messages"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": []
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Create_template",
+    "description": "Create template\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • estimated_time (REQUIRED): Integer\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • title (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • estimated_time (REQUIRED): Integer\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • title (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • estimated_time (REQUIRED): Integer\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • title (REQUIRED): String\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • estimated_time (REQUIRED): Integer\n  • facilitator (REQUIRED): Filter: FACILITATION, UNEDITABLE\n  • title (REQUIRED): String",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "card_description": {
+          "type": "string"
+        },
+        "card_title": {
+          "type": "string"
+        },
+        "card_title_max_length": {
+          "type": "integer"
+        },
+        "card_title_min_length": {
+          "type": "integer"
+        },
+        "card_title_regex": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "estimated_time": {
+          "type": "integer",
+          "enum": [
+            5,
+            10,
+            15,
+            20,
+            30,
+            45,
+            60,
+            120,
+            180,
+            240,
+            480
+          ]
+        },
+        "external_link_creator_id": {
+          "type": "string"
+        },
+        "facilitator": {
+          "properties": {
+            "bot_account_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object",
+          "description": "Filter: FACILITATION, UNEDITABLE"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "manage_status_individually": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "share_scope": {
+          "properties": {
+            "member_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            },
+            "tag_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": false
+            }
+          },
+          "type": "object"
+        },
+        "task_enabled": {
+          "type": "boolean"
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "timing_enabled": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "estimated_time",
+        "facilitator",
+        "title"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_template_by_serial_number",
+    "description": "Get template by serial number\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **serial_number**: Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • serial_number (REQUIRED): Serial Number",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "serial_number": {
+          "type": "string",
+          "description": "Serial Number"
+        },
+        "request_page": {
+          "type": "string",
+          "enum": [
+            "templates",
+            "folder"
+          ]
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "serial_number"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Get_template_by_ID",
+    "description": "Get template by ID\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **template_id**: Template ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "request_page": {
+          "type": "string",
+          "enum": [
+            "templates",
+            "folder"
+          ]
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "template_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Delete_template",
+    "description": "Delete template\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **template_id**: Template ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "description": "JSON string for body"
+        }
+      },
+      "required": [
+        "template_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  },
+  {
+    "name": "Update_template",
+    "description": "Update template\n\n\n**Path Parameters:**\n\n- **workspace_id**: Workspace ID\n\n- **template_id**: Template ID\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter\n📋 REQUEST BODY PARAMETERS:\nRequired:\n  • template_id (REQUIRED): Template UUID filter",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "_delete_form_item_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": false
+        },
+        "card_description": {
+          "type": "string"
+        },
+        "card_title": {
+          "type": "string"
+        },
+        "card_title_max_length": {
+          "type": "integer"
+        },
+        "card_title_min_length": {
+          "type": "integer"
+        },
+        "card_title_regex": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "estimated_time": {
+          "type": "integer",
+          "enum": [
+            5,
+            10,
+            15,
+            20,
+            30,
+            45,
+            60,
+            120,
+            180,
+            240,
+            480
+          ]
+        },
+        "external_link_creator_id": {
+          "type": "string"
+        },
+        "illustration": {
+          "type": "string"
+        },
+        "manage_status_individually": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "patch_facilitator": {
+          "properties": {
+            "patch_facilitator_external_link": {
+              "properties": {
+                "bot_account_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_facilitator_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "patch_share_scope": {
+          "properties": {
+            "patch_share_scope_member": {
+              "properties": {
+                "member_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "patch_share_scope_tag": {
+              "properties": {
+                "tag_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": false
+                },
+                "valid": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "reverse_background": {
+          "type": "boolean"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "task_enabled": {
+          "type": "boolean"
+        },
+        "text_alignment": {
+          "type": "string"
+        },
+        "text_color": {
+          "type": "string",
+          "enum": [
+            "DARK",
+            "LIGHT"
+          ]
+        },
+        "timing_enabled": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "template_id"
+      ]
+    },
+    "_meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    }
+  }
+]

@@ -64,23 +64,23 @@ export type Reaction = {
  * BOTとの送信と受信の両方で用いられるメッセージの内容
  * @property text - 書き込むメッセージ
  * @property metadata - BOT側で自由に利用できるメッセージの隠された情報
- * @property serial_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  */
 export type MessageBody = {
   text: string;
   metadata?: object;
-  serial_no?: number;
 };
 
 /**
  * ClipCrowからWebHook送信する際に追加記述されるメッセージの詳細情報
  * @property id - メッセージやActionログへAPIでアクセスする際に用いるためのID
+ * @property serial_no - メッセージがスレッドへの返答のとき、スレッドにつけられた通し番号を示す
  * @property created_at - メッセージの作成日時
  * @property actor - メッセージの作者であるユーザーもしくはBOTの情報
  * @property reactions - メッセージに付加された絵文字リアクションの情報
  */
 export type Message = MessageBody & {
   id: string;
+  serial_no?: number;
   created_at: string;
   actor: Card;
   reactions?: Reaction[];
@@ -103,8 +103,7 @@ export type ExecuteWebhookAction =
   | "GUEST_USER_CHAT"
   | "REACT_BOT_MESSAGE"
   | "LOG"
-  | "MCP_SYNC"
-  | "OPEN_VIEW";
+  | "MCP_SYNC";
 
 /**
  * ClipCrowからBOTのエンドポイントへ送信されるWebHookのペイロード
@@ -157,12 +156,6 @@ export type ExecuteWebhookRequest<
       };
       workspace: Card;
     }
-  : A extends "OPEN_VIEW"
-  ? {
-      action: A;
-      card: Card;
-      workspace: Card;
-    }
   : never;
 
 /**
@@ -170,7 +163,6 @@ export type ExecuteWebhookRequest<
  * Actionによって期待される返信が異なる。
  * - MENTION / THREAD / GUEST_USER_CHAT: MessageBody (メッセージ返信)
  * - REACT_BOT_MESSAGE / LOG / MCP_SYNC: null (返信にペイロードなし)
- * - OPEN_VIEW: string (HTMLコンテンツ)
  */
 export type ExecuteWebhookResponse<
   A extends ExecuteWebhookAction = ExecuteWebhookAction
@@ -178,6 +170,4 @@ export type ExecuteWebhookResponse<
   ? MessageBody
   : A extends "REACT_BOT_MESSAGE" | "LOG" | "MCP_SYNC"
   ? null
-  : A extends "OPEN_VIEW"
-  ? string
   : never;
